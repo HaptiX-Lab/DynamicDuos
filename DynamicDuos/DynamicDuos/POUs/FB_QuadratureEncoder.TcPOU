@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_QuadratureEncoder" Id="{71414a7b-c766-4420-876b-8ab0ee0929e3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_QuadratureEncoder
+VAR_INPUT
+	// Counter value contains the actual counts on the encoder module. 
+	// This is used in update position to get the current position of the encoder. 
+	nCounterValue: UDINT; 
+END_VAR
+VAR_OUTPUT
+	rDegrees : REAL; 
+END_VAR
+VAR
+	// Cycles per revolution. 
+	// One cycle is defiend as AHIGH BHIGH ALOW BLOW 
+	// So, we'll need to multiply CPR by 4 to get 'counts per revolution'
+	nCPR : REAL := 2048; 
+	
+	// Also since we want direction, we should note the maximum value to calculate direction. 
+	nCOUNTER_MAX_VALUE : UDINT := 16#FFFFFFFF; 
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="UpdatePosition" Id="{ae516e3f-320a-4cd5-aada-a5cc2f3f6805}">
+      <Declaration><![CDATA[METHOD UpdatePosition : BOOL
+VAR
+	// Since we want both +/- degrees, and counter starts at 0, 
+	// we say that if the counter is above half the max, it's actually on the negative side. 
+	// This helper variable will do the conversion
+	nCounterWrappedValue : UDINT; 
+	bIsNegative : BOOL; 
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Determine directionality 
+IF nCounterValue > nCOUNTER_MAX_VALUE / 2 THEN
+	bIsNegative := TRUE; 
+	nCounterWrappedValue := nCOUNTER_MAX_VALUE - nCounterValue; 
+ELSE
+	bIsNegative := FALSE; 
+	nCounterWrappedValue := nCounterValue;
+END_IF
+
+// Encoder output, in degrees
+rDegrees := TO_REAL(nCounterWrappedValue) * 360.0 / (nCPR * 4); 
+
+IF bIsNegative THEN 
+	rDegrees := -1 * rDegrees;
+END_IF
+
+// Return true if the degrees value is not NaN
+UpdatePosition := NOT RealIsNaN(rDegrees); 
+RETURN;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_QuadratureEncoder">
+      <LineId Id="42" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_QuadratureEncoder.UpdatePosition">
+      <LineId Id="48" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="62" Count="1" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{b28e76a4-304f-4046-9598-fedbe83adcc0}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	// Messages we read from the encoder 
+	nEncoder1Counter AT %I* : UDINT; 
+	nEncoder1CounterValueSetRegister AT %Q* : UDINT;  
+	bEncoder1LatchNewValue AT %Q* : BOOL;
+	bEncoder1ValueIsLatched AT %I* : BOOL; 
+	
+	// State we maintain to use the encoder. 
+	fbQuadratureEncoder1 : FB_QuadratureEncoder; 
+	bEncoder1CounterNeedsReset : BOOL := TRUE; 
+	bEncoder1SuccessfullyReset : BOOL := FALSE; 
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Resetting the encoder, we need to do this, then wait, then we can continue. 
+IF bEncoder1CounterNeedsReset THEN 
+	nEncoder1CounterValueSetRegister := 0; 
+	bEncoder1LatchNewValue := TRUE; 
+	bEncoder1CounterNeedsReset := FALSE; 
+ELSIF NOT bEncoder1CounterNeedsReset AND NOT bEncoder1SuccessfullyReset THEN 
+	IF bEncoder1ValueIsLatched THEN
+		bEncoder1SuccessfullyReset := TRUE; 
+		bEncoder1LatchNewValue := FALSE; 
+	END_IF 
+ELSE
+	fbQuadratureEncoder1.nCounterValue := nEncoder1Counter; 
+	fbQuadratureEncoder1.UpdatePosition();
+END_IF
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="55" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="66" Count="2" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
