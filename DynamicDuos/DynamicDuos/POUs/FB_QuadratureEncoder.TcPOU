@@ -3,14 +3,26 @@
   <POU Name="FB_QuadratureEncoder" Id="{71414a7b-c766-4420-876b-8ab0ee0929e3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_QuadratureEncoder
 VAR_INPUT
-	// Counter value contains the actual counts on the encoder module. 
-	// This is used in update position to get the current position of the encoder. 
-	nCounterValue: UDINT; 
 END_VAR
 VAR_OUTPUT
 	rDegrees : REAL; 
+	bInitialized : BOOL := FALSE; 
 END_VAR
 VAR
+	// Counter value contains the actual counts on the encoder module. 
+	// This is used in update position to get the current position of the encoder. 
+	nCounterValue AT %I*: UDINT; 
+	
+	// These values control resetting the counter to 
+	// the default value at the beginning of the program. 
+	// We only need to interact with these one time.
+	nEncoderCounterValueSetRegister AT %Q* : UDINT;  
+	bEncoderLatchNewValue AT %Q* : BOOL;
+	bEncoderValueIsLatched AT %I* : BOOL; 
+	
+	bEncoderCounterNeedsReset : BOOL := TRUE; 
+	bEncoderSuccessfullyReset : BOOL := FALSE;
+	
 	// Cycles per revolution. 
 	// One cycle is defiend as AHIGH BHIGH ALOW BLOW 
 	// So, we'll need to multiply CPR by 4 to get 'counts per revolution'
@@ -24,6 +36,31 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="InitializeCounter" Id="{5735514f-61c0-43bd-a970-7019f083b5ff}">
+      <Declaration><![CDATA[METHOD InitializeCounter : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Check to see if we need to latch a new value into the counter
+InitializeCounter := FALSE; 
+IF bEncoderCounterNeedsReset THEN 
+	nEncoderCounterValueSetRegister := 0; 
+	bEncoderLatchNewValue := TRUE; 
+	bEncoderCounterNeedsReset := FALSE; 
+END_IF
+
+// Check to see if latch is in progress
+IF NOT bEncoderCounterNeedsReset AND NOT bEncoderSuccessfullyReset THEN
+	IF bEncoderValueIsLatched THEN 
+		bEncoderSuccessfullyReset := TRUE; 
+		bEncoderLatchNewValue := FALSE;
+		InitializeCounter := TRUE; 
+		bInitialized := TRUE; 
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="UpdatePosition" Id="{ae516e3f-320a-4cd5-aada-a5cc2f3f6805}">
       <Declaration><![CDATA[METHOD UpdatePosition : BOOL
 VAR
@@ -57,7 +94,15 @@ RETURN;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_QuadratureEncoder">
-      <LineId Id="42" Count="0" />
+      <LineId Id="87" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_QuadratureEncoder.InitializeCounter">
+      <LineId Id="6" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="7" Count="10" />
+      <LineId Id="20" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_QuadratureEncoder.UpdatePosition">
       <LineId Id="48" Count="0" />
