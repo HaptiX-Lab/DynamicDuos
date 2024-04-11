@@ -6,6 +6,8 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
 	rDegrees : REAL; 
+	rDegreesDot : REAL; 
+	rLastDegrees : REAL; 
 	bInitialized : BOOL := FALSE; 
 END_VAR
 VAR
@@ -69,10 +71,16 @@ VAR
 	// This helper variable will do the conversion
 	nCounterWrappedValue : UDINT; 
 	bIsNegative : BOOL; 
+	
+	nNanoSecondsSinceLastCall : UDINT := 0;
+	rSecondsSinceLastCall : REAL := 0;  
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Determine directionality 
+        <ST><![CDATA[// Store last value in last degrees 
+rLastDegrees := rDegrees; 
+
+// Determine directionality 
 IF nCounterValue > nCOUNTER_MAX_VALUE / 2 THEN
 	bIsNegative := TRUE; 
 	nCounterWrappedValue := nCOUNTER_MAX_VALUE - nCounterValue; 
@@ -87,6 +95,12 @@ rDegrees := TO_REAL(nCounterWrappedValue) * 360.0 / (nCPR * 4);
 IF bIsNegative THEN 
 	rDegrees := -1 * rDegrees;
 END_IF
+
+// Down here, update velocity estimate accordingly 
+// Start by estimating time since last call
+nNanoSecondsSinceLastCall := _TaskInfo[GETCURTASKINDEXEX()].CycleTime; 
+rSecondsSinceLastCall := UDINT_TO_REAL(nNanoSecondsSinceLastCall); 
+rDegreesDot := (1 / rSecondsSinceLastCall) * (rDegrees - rLastDegrees); 
 
 // Return true if the degrees value is not NaN
 UpdatePosition := NOT RealIsNaN(rDegrees); 
@@ -105,6 +119,9 @@ RETURN;]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_QuadratureEncoder.UpdatePosition">
+      <LineId Id="76" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="77" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="52" Count="1" />
       <LineId Id="58" Count="0" />
@@ -116,6 +133,11 @@ RETURN;]]></ST>
       <LineId Id="61" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="62" Count="1" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="86" Count="0" />
       <LineId Id="44" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="28" Count="0" />

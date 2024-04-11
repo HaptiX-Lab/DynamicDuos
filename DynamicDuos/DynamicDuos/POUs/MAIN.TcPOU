@@ -11,6 +11,10 @@ VAR
 	nFiveVoltValue : INT := 16383; 
 	nTenVoltValue : INT := 32767;
 	
+	// This is a correction value that makes use of the fact that discretizing 
+	// virtual spring comes with instabilities that require degree prediction. 
+	// See more at "WALL CHATTER AND ENERGY LEAK" by Jim Freudenberg
+	rDegreesCorrectedValue : REAL := 0; 
 	rMaxDegreesValue : REAL := 90; // Let's say at 90 degrees, we want max voltage 
 	rDegreesPercentageValue : REAL := 0; // use this to track percentage to 90
 	
@@ -24,7 +28,8 @@ END_IF
 fbQuadratureEncoder1.UpdatePosition();
 
 // Calcualte percentage value 
-rDegreesPercentageValue := fbQuadratureEncoder1.rDegrees / rMaxDegreesValue; 
+rDegreesCorrectedValue := (3/2)*fbQuadratureEncoder1.rDegrees - (1/2)*fbQuadratureEncoder1.rLastDegrees;
+rDegreesPercentageValue := rDegreesCorrectedValue / rMaxDegreesValue; 
 
 // Cap at 100% 
 IF rDegreesPercentageValue > 1.0 THEN  
@@ -41,7 +46,9 @@ nAnalogOutput2 := REAL_TO_INT(-1 * rDegreesPercentageValue * nTenVoltValue); ]]>
       <LineId Id="86" Count="0" />
       <LineId Id="88" Count="2" />
       <LineId Id="87" Count="0" />
-      <LineId Id="121" Count="2" />
+      <LineId Id="121" Count="1" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="123" Count="0" />
       <LineId Id="125" Count="0" />
       <LineId Id="124" Count="0" />
       <LineId Id="126" Count="4" />
