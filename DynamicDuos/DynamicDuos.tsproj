@@ -85,7 +85,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{4318644D-8D1E-92F0-469A-AA2DFA1D0CA4}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{C6500A21-4971-F7A7-E7A2-79C33C7DEB35}">
 					<Name>DynamicDuos Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -112,11 +112,6 @@
 							<Type>INT</Type>
 						</Var>
 						<Var>
-							<Name>MAIN.nAnalogOutput3</Name>
-							<Comment><![CDATA[ We'll use this as ground]]></Comment>
-							<Type>INT</Type>
-						</Var>
-						<Var>
 							<Name>MAIN.fbQuadratureEncoder1.nEncoderCounterValueSetRegister</Name>
 							<Comment><![CDATA[ These values control resetting the counter to 
  the default value at the beginning of the program. 
@@ -126,6 +121,11 @@
 						<Var>
 							<Name>MAIN.fbQuadratureEncoder1.bEncoderLatchNewValue</Name>
 							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.nAnalogOutput3</Name>
+							<Comment><![CDATA[ We'll use this as ground]]></Comment>
+							<Type>INT</Type>
 						</Var>
 					</Vars>
 					<UnrestoredVarLinks ImportTime="2024-03-26T05:21:53">

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="GVL" Id="{cfad6f1a-0ad1-43a9-b2d8-5d96500c77bd}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+
+	ENCODER_1_DEGREES : REAL; 
+	ENCODER_1_DEGREES_DOT : REAL; 
+	ENCODER_1_COUNTER_VALUE : UDINT; 
+	ENCODER_1_WRAPPED_COUNTER_VALUE : UDINT; 
+	ENCODER_1_WRAPPED_COUNTER_SIGN : INT; 
+
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

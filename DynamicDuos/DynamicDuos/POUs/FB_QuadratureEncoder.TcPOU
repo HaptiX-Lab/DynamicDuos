@@ -31,7 +31,7 @@ VAR
 	nCPR : REAL := 2048; 
 	
 	// Also since we want direction, we should note the maximum value to calculate direction. 
-	nCOUNTER_MAX_VALUE : UDINT := 16#FFFFFFFF; 
+	nCOUNTER_MAX_VALUE : UDINT := 16#FFFFFFFF - UDINT#1; 
 	
 END_VAR
 ]]></Declaration>
@@ -47,7 +47,7 @@ END_VAR
         <ST><![CDATA[// Check to see if we need to latch a new value into the counter
 InitializeCounter := FALSE; 
 IF bEncoderCounterNeedsReset THEN 
-	nEncoderCounterValueSetRegister := 0; 
+	nEncoderCounterValueSetRegister := nCOUNTER_MAX_VALUE / 2; 
 	bEncoderLatchNewValue := TRUE; 
 	bEncoderCounterNeedsReset := FALSE; 
 END_IF
@@ -66,8 +66,8 @@ END_IF]]></ST>
     <Method Name="UpdatePosition" Id="{ae516e3f-320a-4cd5-aada-a5cc2f3f6805}">
       <Declaration><![CDATA[METHOD UpdatePosition : BOOL
 VAR
-	// Since we want both +/- degrees, and counter starts at 0, 
-	// we say that if the counter is above half the max, it's actually on the negative side. 
+	// Since we want both +/- degrees, and counter starts at half the max, 
+	// we say that if the counter is below half the max, it's actually on the negative side. 
 	// This helper variable will do the conversion
 	nCounterWrappedValue : UDINT; 
 	bIsNegative : BOOL; 
@@ -81,12 +81,12 @@ END_VAR
 rLastDegrees := rDegrees; 
 
 // Determine directionality 
-IF nCounterValue > nCOUNTER_MAX_VALUE / 2 THEN
+IF nCounterValue < nCOUNTER_MAX_VALUE / 2 THEN
 	bIsNegative := TRUE; 
-	nCounterWrappedValue := nCOUNTER_MAX_VALUE - nCounterValue; 
+	nCounterWrappedValue := nCOUNTER_MAX_VALUE / 2 - nCounterValue; 
 ELSE
 	bIsNegative := FALSE; 
-	nCounterWrappedValue := nCounterValue;
+	nCounterWrappedValue := nCounterValue - nCOUNTER_MAX_VALUE / 2;
 END_IF
 
 // Encoder output, in degrees
@@ -101,6 +101,14 @@ END_IF
 nNanoSecondsSinceLastCall := _TaskInfo[GETCURTASKINDEXEX()].CycleTime; 
 rSecondsSinceLastCall := UDINT_TO_REAL(nNanoSecondsSinceLastCall); 
 rDegreesDot := (1 / rSecondsSinceLastCall) * (rDegrees - rLastDegrees); 
+
+
+// Update global variables for debugging 
+GVL.ENCODER_1_COUNTER_VALUE := nCounterValue; 
+GVL.ENCODER_1_WRAPPED_COUNTER_VALUE := nCounterWrappedValue; 
+GVL.ENCODER_1_WRAPPED_COUNTER_SIGN := BOOL_TO_INT(bIsNegative);
+GVL.ENCODER_1_DEGREES := rDegrees; 
+GVL.ENCODER_1_DEGREES_DOT := rDegreesDot; 
 
 // Return true if the degrees value is not NaN
 UpdatePosition := NOT RealIsNaN(rDegrees); 
@@ -138,6 +146,11 @@ RETURN;]]></ST>
       <LineId Id="85" Count="0" />
       <LineId Id="83" Count="1" />
       <LineId Id="86" Count="0" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="103" Count="1" />
       <LineId Id="44" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="28" Count="0" />
