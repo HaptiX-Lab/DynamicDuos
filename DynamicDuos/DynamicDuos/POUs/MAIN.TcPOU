@@ -3,60 +3,54 @@
   <POU Name="MAIN" Id="{b28e76a4-304f-4046-9598-fedbe83adcc0}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	fbQuadratureEncoder1 : FB_QuadratureEncoder; 
-	nAnalogOutput1 AT %Q* : INT := 0; 
-	nAnalogOutput2 AT %Q* : INT := 0; 
-	nAnalogOutput3 AT %Q* : INT := 0; // We'll use this as ground
+	fbEncoder1 : FB_QuadratureEncoder;
+	fbMotor1 : FB_AnalogMotorDriver; 
 	
-	nFiveVoltValue : INT := 16383; 
-	nTenVoltValue : INT := 32767;
+	// Variables for logging
+	nEncoder1Counts : LINT; 
+	rEncoder1Degrees : REAL;
+
+	// Variables for virtual spring 
+	rNormalizedWheelPosition : REAL;  
+	rCommand : REAL; 
 	
-	// This is a correction value that makes use of the fact that discretizing 
-	// virtual spring comes with instabilities that require degree prediction. 
-	// See more at "WALL CHATTER AND ENERGY LEAK" by Jim Freudenberg
-	rDegreesCorrectedValue : REAL := 0; 
-	rMaxDegreesValue : REAL := 90; // Let's say at 90 degrees, we want max voltage 
-	rDegreesPercentageValue : REAL := 0; // use this to track percentage to 90
 	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF NOT fbQuadratureEncoder1.bInitialized THEN
-	fbQuadratureEncoder1.InitializeCounter(); 
-END_IF
+      <ST><![CDATA[fbEncoder1(); 
+nEncoder1Counts := fbEncoder1.nNetCounts; 
+rEncoder1Degrees := fbEncoder1.rDegrees; 
 
-fbQuadratureEncoder1.UpdatePosition();
+// Scale between 0 and 90 
+rNormalizedWheelPosition := rEncoder1Degrees / 120.0; 
 
-// Calcualte percentage value 
-rDegreesCorrectedValue := (3/2)*fbQuadratureEncoder1.rDegrees - (1/2)*fbQuadratureEncoder1.rLastDegrees;
+IF rNormalizedWheelPosition > 1 THEN 
+	rNormalizedWheelPosition := 1;
+ELSIF rNormalizedWheelPosition < -1 THEN 
+	rNormalizedWheelPosition := -1;
+END_IF 
 
-rDegreesPercentageValue := rDegreesCorrectedValue / rMaxDegreesValue; 
+rCommand := rNormalizedWheelPosition * 3; 
 
-// Cap at 100% 
-IF rDegreesPercentageValue > 1.0 THEN  
-	rDegreesPercentageValue := 1.0; 
-ELSIF rDegreesPercentageValue < -1.0 THEN 
-	rDegreesPercentageValue := -1.0; 
-END_IF
-
-// Then, apply this to output of voltage signal 
-nAnalogOutput1 := REAL_TO_INT(rDegreesPercentageValue * nFiveVoltValue); 
-nAnalogOutput2 := REAL_TO_INT(-1 * rDegreesPercentageValue * nFiveVoltValue); ]]></ST>
+// Now command the motor correspondingly. 
+fbMotor1(rCommandVoltage := rCommand); ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="86" Count="0" />
-      <LineId Id="88" Count="2" />
-      <LineId Id="87" Count="0" />
-      <LineId Id="121" Count="1" />
-      <LineId Id="147" Count="0" />
-      <LineId Id="166" Count="0" />
-      <LineId Id="123" Count="0" />
-      <LineId Id="125" Count="0" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="126" Count="4" />
-      <LineId Id="132" Count="0" />
-      <LineId Id="131" Count="0" />
-      <LineId Id="133" Count="1" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="146" Count="1" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="163" Count="2" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="172" Count="0" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="151" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

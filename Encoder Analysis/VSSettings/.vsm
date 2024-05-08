@@ -14,31 +14,19 @@
           <FileName></FileName>
           <Children>
             <Node>
-              <Title>ENCODER_1_COUNTER_VALUE</Title>
+              <Title>nEncoder1Counts</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
             </Node>
             <Node>
-              <Title>ENCODER_1_DEGREES</Title>
+              <Title>rCommand</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
             </Node>
             <Node>
-              <Title>ENCODER_1_DEGREES_DOT</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>ENCODER_1_WRAPPED_COUNTER_SIGN</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>ENCODER_1_WRAPPED_COUNTER_VALUE</Title>
+              <Title>rEncoder1Degrees</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -47,7 +35,7 @@
         </Node>
         <Node>
           <Title>YT Chart</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -56,7 +44,7 @@
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>ENCODER_1_DEGREES</Title>
+                  <Title>rEncoder1Degrees</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -69,7 +57,27 @@
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>ENCODER_1_COUNTER_VALUE</Title>
+                  <Title>nEncoder1Counts</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+          </Children>
+        </Node>
+        <Node>
+          <Title>Virtual Spring Testing</Title>
+          <Expanded>True</Expanded>
+          <FileName></FileName>
+          <Children>
+            <Node>
+              <Title>Degrees Axis (1)</Title>
+              <Expanded>True</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>rEncoder1Degrees (1)</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -77,12 +85,12 @@
               </Children>
             </Node>
             <Node>
-              <Title>Scaled Counter Axis</Title>
+              <Title>Volts Axis</Title>
               <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>ENCODER_1_WRAPPED_COUNTER_VALUE</Title>
+                  <Title>rCommand</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />

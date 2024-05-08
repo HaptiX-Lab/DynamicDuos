@@ -16,6 +16,7 @@
     <Implicit_KindOfTask>{efa55633-84a2-4890-bd70-f92a13b3c9b1}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{5f8002a6-06d8-49bb-9cdd-d6c716c6fdf5}</Implicit_Jitter_Distribution>
     <LibraryReferences>{44911832-87b8-4d0b-9438-6e2812056434}</LibraryReferences>
+    <Released>false</Released>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\GVL.TcGVL">
@@ -23,9 +24,6 @@
       <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\FB_QuadratureEncoder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
@@ -49,6 +47,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -59,6 +58,11 @@
     <None Include="DynamicDuos.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <LibraryReference Include="Haptix-Beckhoff,newest,HaptiX Lab">
+      <Namespace>Haptix_Beckhoff</Namespace>
+    </LibraryReference>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
