@@ -85,7 +85,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{53C3749A-3BCE-F813-DA03-A124F7F6158C}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{1C9A9C56-6981-1100-450F-84DC93AED2A1}">
 					<Name>DynamicDuos Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -99,6 +99,18 @@
  The quadrature encoder block abstracts any complexity needed 
  to read/set values in the QE_CHANNEL object so that the device 
  works as seemlessly as possible. ]]></Comment>
+							<Type>UDINT</Type>
+						</Var>
+						<Var>
+							<Name>GVL.ENCODER_1_A_STATUS</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>GVL.ENCODER_1_B_STATUS</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>GVL.ENCODER_1_RAW_COUNTS</Name>
 							<Type>UDINT</Type>
 						</Var>
 					</Vars>
@@ -1244,6 +1256,9 @@ Bit1: Value smaller than Limit2]]></Comment>
 				<Link VarA="PlcTask Outputs^MAIN.fbMotor1.nZeroRefAnalogOutput" VarB="AO Outputs Channel 3^Analog output"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 4 (EL5122)">
+				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_A_STATUS" VarB="ENC Status Channel 1^Status of input A"/>
+				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_B_STATUS" VarB="ENC Status Channel 1^Status of input B"/>
+				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_RAW_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 				<Link VarA="PlcTask Inputs^MAIN.fbEncoder1.QE_CHANNEL_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 			</OwnerB>
 		</OwnerA>
