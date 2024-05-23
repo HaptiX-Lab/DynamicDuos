@@ -31,7 +31,7 @@ ELSIF rNormalizedWheelPosition < -1 THEN
 	rNormalizedWheelPosition := -1;
 END_IF 
 
-rCommand := rNormalizedWheelPosition * 4; 
+rCommand := -1 * rNormalizedWheelPosition * 4; 
 
 // Now command the motor correspondingly. 
 fbMotor1(rCommandVoltage := rCommand); ]]></ST>
