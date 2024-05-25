@@ -77,8 +77,8 @@
   "disableLoadingOptimization": false,
   "creatorSettings": {
     "viewport": {
-      "defaultWidth": 800,
-      "defaultHeight": 600
+      "defaultWidth": 1920,
+      "defaultHeight": 1080
     }
   },
   "binding": {
@@ -96,6 +96,10 @@
     {
       "name": "Beckhoff.TwinCAT.HMI.Functions",
       "basePath": "/Beckhoff.TwinCAT.HMI.Functions"
+    },
+    {
+      "name": "Beckhoff.TwinCAT.HMI.ScopeControl",
+      "basePath": "/Beckhoff.TwinCAT.HMI.ScopeControl"
     }
   ],
   "keyboardLayouts": [
