@@ -3,54 +3,38 @@
   <POU Name="MAIN" Id="{b28e76a4-304f-4046-9598-fedbe83adcc0}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	fbEncoder1 : FB_QuadratureEncoder;
-	fbMotor1 : FB_AnalogMotorDriver; 
 	
-	// Variables for logging
-	nEncoder1Counts : LINT; 
-	rEncoder1Degrees : REAL;
+	// Establish state machine for hardware
+	MASTER_STATE : MasterStateType := MasterStateType.WAITING;	
+	MASTER_STATE_STR : STRING := TO_STRING(MASTER_STATE);
 
-	// Variables for virtual spring 
-	rNormalizedWheelPosition : REAL;  
-	rCommand : REAL; 
-	
+	// Establish state machine for GUI
+	WINDOW_STATE : ActiveWindowStateType := ActiveWindowStateType.EXPERIMENT_WINDOW; 
 	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbEncoder1(); 
-nEncoder1Counts := fbEncoder1.nNetCounts; 
-rEncoder1Degrees := fbEncoder1.rDegrees; 
+      <ST><![CDATA[MASTER_STATE := MasterStateType.WAITING;
+MASTER_STATE_STR := TO_STRING(MASTER_STATE);
 
-// Scale between 0 and 90 
-rNormalizedWheelPosition := rEncoder1Degrees / 120.0; 
 
-IF rNormalizedWheelPosition > 1 THEN 
-	rNormalizedWheelPosition := 1;
-ELSIF rNormalizedWheelPosition < -1 THEN 
-	rNormalizedWheelPosition := -1;
-END_IF 
-
-rCommand := -1 * rNormalizedWheelPosition * 4; 
-
-// Now command the motor correspondingly. 
-fbMotor1(rCommandVoltage := rCommand); ]]></ST>
+IF MASTER_STATE = MasterStateType.ACTIVE THEN
+	MainExperimentLoop(); 
+ELSIF MASTER_STATE = MasterStateType.CALIBRATION THEN
+	CalibrationExperimentLoop();
+END_IF
+]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="134" Count="0" />
-      <LineId Id="146" Count="1" />
-      <LineId Id="154" Count="0" />
-      <LineId Id="153" Count="0" />
-      <LineId Id="159" Count="0" />
-      <LineId Id="162" Count="0" />
-      <LineId Id="160" Count="0" />
-      <LineId Id="163" Count="2" />
-      <LineId Id="170" Count="0" />
-      <LineId Id="172" Count="0" />
-      <LineId Id="171" Count="0" />
-      <LineId Id="149" Count="0" />
-      <LineId Id="148" Count="0" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="222" Count="0" />
       <LineId Id="151" Count="0" />
+      <LineId Id="223" Count="1" />
+      <LineId Id="230" Count="0" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="228" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

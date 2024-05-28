@@ -1,0 +1,9 @@
+<div id="CalibrationDashboard" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="1227" data-tchmi-height="860">
+
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(234, 127, 234, 1)"
+}
+</script>
+</div>

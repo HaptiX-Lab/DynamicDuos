@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="MasterStateType" Id="{926d60d7-66b4-4c29-8b79-ca1f1a695b04}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE MasterStateType :
+(
+	WAITING := 0, 
+	CALIBRATION := 1, 
+	ACTIVE := 2,
+	ERROR := -1
+)SINT := WAITING;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

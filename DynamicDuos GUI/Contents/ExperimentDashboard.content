@@ -1,0 +1,26 @@
+<div id="ExperimentDashboard" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="1227" data-tchmi-height="860">
+
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(133, 226, 158, 1)"
+}
+</script>
+<div id="TcHmiTextblock_10" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="51" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Select Load Case" data-tchmi-top="41" data-tchmi-top-unit="px" data-tchmi-width="285" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="30">
+</div>
+<div id="TcHmiRadioButton_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Very Light" data-tchmi-top="139" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Active" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MainExperimentLoop.bVeryLightLoad%/s%">
+
+</div>
+<div id="TcHmiRadioButton_6" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Light" data-tchmi-top="211" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MainExperimentLoop.bLightLoad%/s%">
+
+</div>
+<div id="TcHmiRadioButton_7" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Medium" data-tchmi-top="288" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MainExperimentLoop.bMediumLoad%/s%">
+
+</div>
+<div id="TcHmiRadioButton_8" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Moderately Heavy" data-tchmi-top="361" data-tchmi-top-unit="px" data-tchmi-width="239" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MainExperimentLoop.bModeratelyHeavyLoad%/s%">
+
+</div>
+<div id="TcHmiRadioButton_9" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Heavy" data-tchmi-top="430" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MainExperimentLoop.bHeavyLoad%/s%">
+
+</div>
+</div>

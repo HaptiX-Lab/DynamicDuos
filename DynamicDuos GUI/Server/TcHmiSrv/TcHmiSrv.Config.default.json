@@ -27,7 +27,102 @@
     "DEFAULTTIMEFORMATLOCALE": "client",
     "DEFAULTTIMEZONE": "client",
     "DEFAULTUSERGROUP": "__SystemUsers",
-    "DEFINITIONS": {},
+    "DEFINITIONS": {
+        "PLC1.ActiveWindowStateType": {
+            "attributes": {
+                "generate_implicit_init_function": "",
+                "qualified_only": "",
+                "strict": ""
+            },
+            "enum": [
+                0,
+                1
+            ],
+            "options": [
+                {
+                    "label": "EXPERIMENT_WINDOW",
+                    "value": 0
+                },
+                {
+                    "label": "CALIBRATION_WINDOW",
+                    "value": 1
+                }
+            ],
+            "type": "integer"
+        },
+        "PLC1.LoadCaseType": {
+            "attributes": {
+                "generate_implicit_init_function": "",
+                "qualified_only": "",
+                "strict": ""
+            },
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "options": [
+                {
+                    "label": "VERY_LIGHT",
+                    "value": 0
+                },
+                {
+                    "label": "LIGHT",
+                    "value": 1
+                },
+                {
+                    "label": "MEDIUM",
+                    "value": 2
+                },
+                {
+                    "label": "MODERATELY_HEAVY",
+                    "value": 3
+                },
+                {
+                    "label": "HEAVY",
+                    "value": 4
+                }
+            ],
+            "type": "integer"
+        },
+        "PLC1.MasterStateType": {
+            "attributes": {
+                "generate_implicit_init_function": "",
+                "qualified_only": "",
+                "strict": "",
+                "to_string": "",
+                "to_string_function": "__TO_STRING__675",
+                "to_wstring_function": "__TO_WSTRING__675"
+            },
+            "enum": [
+                0,
+                1,
+                2,
+                -1
+            ],
+            "options": [
+                {
+                    "label": "WAITING",
+                    "value": 0
+                },
+                {
+                    "label": "CALIBRATION",
+                    "value": 1
+                },
+                {
+                    "label": "ACTIVE",
+                    "value": 2
+                },
+                {
+                    "label": "ERROR",
+                    "value": -1
+                }
+            ],
+            "type": "integer"
+        }
+    },
     "DEFLATECOMPRESSIONLEVEL": 5,
     "DIAGNOSTICS_DOMAINS": [],
     "DISABLED_CONFIGURATION_HINTS": [],
@@ -2515,6 +2610,50 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.MASTER_STATE": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::MASTER_STATE",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "comment": "Establish state machine"
+                    },
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.MasterStateType"
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.MASTER_STATE_STR": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::MASTER_STATE_STR",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/STRING%2880%29"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.WINDOW_STATE": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::WINDOW_STATE",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "comment": "Establish state machine for GUI"
+                    },
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ActiveWindowStateType"
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.rCommand": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2530,6 +2669,126 @@
             "DOMAIN": "ADS",
             "DYNAMIC": true,
             "MAPPING": "PLC1::MAIN::rEncoder1Degrees",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.bHeavyLoad": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::bHeavyLoad",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.bLightLoad": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::bLightLoad",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.bMediumLoad": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::bMediumLoad",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.bModeratelyHeavyLoad": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::bModeratelyHeavyLoad",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.bVeryLightLoad": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::bVeryLightLoad",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.iLoadSelector": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::iLoadSelector",
+            "SCHEMA": {
+                "$ref": "tchmi:server#/definitions/PLC1.LoadCaseType"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.0": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::iLoadSelectorRadioGroup[0]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/STRING%2880%29"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.1": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::iLoadSelectorRadioGroup[1]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/STRING%2880%29"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.2": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::iLoadSelectorRadioGroup[2]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/STRING%2880%29"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.3": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::iLoadSelectorRadioGroup[3]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/STRING%2880%29"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.4": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::iLoadSelectorRadioGroup[4]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/STRING%2880%29"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MainExperimentLoop.rLoadMultiplier": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MainExperimentLoop::rLoadMultiplier",
             "SCHEMA": {
                 "$ref": "tchmi:general#/definitions/REAL"
             },
@@ -7267,8 +7526,23 @@
                 "LocalizeText": 3,
                 "Login": 3,
                 "Logout": 3,
+                "PLC1.MAIN.MASTER_STATE": 3,
+                "PLC1.MAIN.MASTER_STATE_STR": 3,
+                "PLC1.MAIN.WINDOW_STATE": 3,
                 "PLC1.MAIN.rCommand": 3,
                 "PLC1.MAIN.rEncoder1Degrees": 3,
+                "PLC1.MainExperimentLoop.bHeavyLoad": 3,
+                "PLC1.MainExperimentLoop.bLightLoad": 3,
+                "PLC1.MainExperimentLoop.bMediumLoad": 3,
+                "PLC1.MainExperimentLoop.bModeratelyHeavyLoad": 3,
+                "PLC1.MainExperimentLoop.bVeryLightLoad": 3,
+                "PLC1.MainExperimentLoop.iLoadSelector": 3,
+                "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.0": 3,
+                "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.1": 3,
+                "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.2": 3,
+                "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.3": 3,
+                "PLC1.MainExperimentLoop.iLoadSelectorRadioGroup.4": 3,
+                "PLC1.MainExperimentLoop.rLoadMultiplier": 3,
                 "SetLocale": 3,
                 "SubscribeEvents": 3,
                 "TcHmiScope.ChangeChannelState": 3,

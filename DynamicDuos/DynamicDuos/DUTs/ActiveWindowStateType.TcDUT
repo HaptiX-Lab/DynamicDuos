@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ActiveWindowStateType" Id="{fc9328e0-26f3-41ff-8943-5bd343f7b707}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ActiveWindowStateType :
+(
+	EXPERIMENT_WINDOW := 0,
+	CALIBRATION_WINDOW := 1
+) SINT := EXPERIMENT_WINDOW;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

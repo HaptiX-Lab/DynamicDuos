@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="CalibrationExperimentLoop" Id="{e275cd2c-3601-4000-b109-c3a2be9dc278}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM CalibrationExperimentLoop
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Nothing
+ADSLOGSTR(
+	msgCtrlMask := ADSLOG_MSGTYPE_HINT, 
+	msgFmtStr := 'Test message. Device is in calibration', 
+	strArg := ''
+); ]]></ST>
+    </Implementation>
+    <LineIds Name="CalibrationExperimentLoop">
+      <LineId Id="5" Count="5" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
