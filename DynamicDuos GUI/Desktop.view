@@ -2,7 +2,7 @@
   <div id="ViewDesktopBeckhoffLogo" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiImage" data-tchmi-src="Images/Beckhoff_Logo.svg" data-tchmi-left="20" data-tchmi-top="20" data-tchmi-width="194" data-tchmi-height="57" data-tchmi-zindex="2">
 
   </div>
-<div id="TcHmiTachometer" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTachometer" data-tchmi-base-animation-time="1000" data-tchmi-height="235" data-tchmi-height-unit="px" data-tchmi-label-range="40" data-tchmi-left="54" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-top="185" data-tchmi-top-unit="px" data-tchmi-width="252" data-tchmi-width-unit="px" data-tchmi-min-value="160" data-tchmi-max-value="-160" data-tchmi-start-position="250" data-tchmi-end-position="-70" data-tchmi-unit="Deg" data-tchmi-value="%s%PLC1.MAIN.rEncoder1Degrees%/s%" data-tchmi-zindex="2">
+<div id="TcHmiTachometer" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTachometer" data-tchmi-base-animation-time="1000" data-tchmi-height="235" data-tchmi-height-unit="px" data-tchmi-label-range="40" data-tchmi-left="54" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-top="185" data-tchmi-top-unit="px" data-tchmi-width="252" data-tchmi-width-unit="px" data-tchmi-min-value="160" data-tchmi-max-value="-160" data-tchmi-start-position="250" data-tchmi-end-position="-70" data-tchmi-unit="Deg" data-tchmi-zindex="2" data-tchmi-value="%s%PLC1.GVL.ENCODER_1_DEGREES%/s%">
 <script data-tchmi-target-attribute="data-tchmi-range" type="application/json">
 [
   {
@@ -70,7 +70,7 @@
 </div>
 <div id="TcHmiTextblock_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="320" data-tchmi-left-unit="px" data-tchmi-text="Applied Voltage" data-tchmi-top="154" data-tchmi-top-unit="px" data-tchmi-width="252" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="20" data-tchmi-zindex="2">
 </div>
-<div id="TcHmiLinearGauge" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height="222" data-tchmi-height-unit="px" data-tchmi-label-range="2" data-tchmi-left="320" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top="199" data-tchmi-top-unit="px" data-tchmi-width="279" data-tchmi-width-unit="px" data-tchmi-min-value="-5" data-tchmi-max-value="5" data-tchmi-unit="V" data-tchmi-value="%s%PLC1.MAIN.rCommand%/s%" data-tchmi-zindex="2">
+<div id="TcHmiLinearGauge" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height="222" data-tchmi-height-unit="px" data-tchmi-label-range="2" data-tchmi-left="320" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top="199" data-tchmi-top-unit="px" data-tchmi-width="279" data-tchmi-width-unit="px" data-tchmi-min-value="-5" data-tchmi-max-value="5" data-tchmi-unit="V" data-tchmi-zindex="2" data-tchmi-value="%s%PLC1.GVL.MOTOR_1_APPLIED_VOLTAGE%/s%">
 <script data-tchmi-target-attribute="data-tchmi-range" type="application/json">
 [
   {
@@ -360,12 +360,47 @@
   }
 ]
 </script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 1,
+  "right": 1,
+  "top": 1,
+  "bottom": 1,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-style" type="application/json">
+{
+  "left": "Solid",
+  "right": "Solid",
+  "top": "Solid",
+  "bottom": "Solid"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
+{
+  "topLeft": 20.0,
+  "topRight": 20.0,
+  "bottomLeft": 20.0,
+  "bottomRight": 20.0,
+  "topLeftUnit": "px",
+  "topRightUnit": "px",
+  "bottomLeftUnit": "px",
+  "bottomRightUnit": "px"
+}
+</script>
 </div>
 <div id="TcHmiTextblock_7" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="48" data-tchmi-height-unit="px" data-tchmi-left="1646" data-tchmi-left-unit="px" data-tchmi-text="Experiment Window" data-tchmi-top="151" data-tchmi-top-unit="px" data-tchmi-width="228" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="24">
 
 <script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
 {
-  "color": "rgba(69, 178, 99, 1)"
+  "color": "rgba(231, 231, 231, 1)"
 }
 </script>
 
@@ -418,7 +453,7 @@
               {
                 "compare1": {
                   "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/String",
+                  "valueType": "tchmi:server#/definitions/PLC1.ActiveWindowStateType",
                   "symbolExpression": "%s%PLC1.MAIN.WINDOW_STATE%/s%"
                 },
                 "compare2": {
@@ -439,7 +474,7 @@
                   "objectType": "StaticValue",
                   "valueType": "tchmi:framework#/definitions/Color",
                   "value": {
-                    "color": "rgba(133, 226, 158, 1)"
+                    "color": "rgba(231, 231, 231, 1)"
                   }
                 },
                 "asyncWait": true
@@ -456,7 +491,7 @@
                   "objectType": "StaticValue",
                   "valueType": "tchmi:framework#/definitions/Color",
                   "value": {
-                    "color": "rgba(69, 178, 99, 1)"
+                    "color": "rgba(188, 188, 188, 1)"
                   }
                 },
                 "asyncWait": true
@@ -490,7 +525,7 @@
 <div id="TcHmiTextblock_8" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="48" data-tchmi-height-unit="px" data-tchmi-left="1399" data-tchmi-left-unit="px" data-tchmi-text="Calibration Window" data-tchmi-top="151" data-tchmi-top-unit="px" data-tchmi-width="228" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="24">
 <script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
 {
-  "color": "rgba(178, 68, 178, 1)"
+  "color": "rgba(188, 188, 188, 1)"
 }
 </script>
 
@@ -564,7 +599,7 @@
                   "objectType": "StaticValue",
                   "valueType": "tchmi:framework#/definitions/Color",
                   "value": {
-                    "color": "rgba(234, 127, 234, 1)"
+                    "color": "rgba(231, 231, 231, 1)"
                   }
                 },
                 "asyncWait": true
@@ -581,7 +616,7 @@
                   "objectType": "StaticValue",
                   "valueType": "tchmi:framework#/definitions/Color",
                   "value": {
-                    "color": "rgba(178, 68, 178, 1)"
+                    "color": "rgba(188, 188, 188, 1)"
                   }
                 },
                 "asyncWait": true

@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MainExperimentBlock" Id="{73062513-3b4d-4e94-a84f-ab2158a9ec36}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MainExperimentBlock
+VAR_INPUT
+	bVeryLightLoad : BOOL := TRUE; 
+	bLightLoad : BOOL := FALSE; 
+	bMediumLoad : BOOL := FALSE; 
+	bModeratelyHeavyLoad : BOOL := FALSE; 
+	bHeavyLoad : BOOL := FALSE;
+END_VAR
+VAR_OUTPUT
+
+	// Variables for logging
+	nEncoder1Counts : LINT; 
+	rEncoder1Degrees : REAL;
+
+	// Variables for virtual spring 
+	rNormalizedWheelPosition : REAL;  
+	rCommand : REAL; 		
+
+END_VAR
+VAR
+	
+	// Variables to keep track of the actual encoder/motor setup 
+	fbEncoder1 : FB_QuadratureEncoder;
+	fbMotor1 : FB_AnalogMotorDriver; 
+	
+	// Intermediate variables for virtual spring
+	rLoadMultiplier : REAL := 1;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbEncoder1(); 
+nEncoder1Counts := fbEncoder1.nNetCounts; 
+rEncoder1Degrees := fbEncoder1.rDegrees; 
+
+// Scale between 0 and 90 
+rNormalizedWheelPosition := rEncoder1Degrees / 120.0; 
+
+IF rNormalizedWheelPosition > 1 THEN 
+	rNormalizedWheelPosition := 1;
+ELSIF rNormalizedWheelPosition < -1 THEN 
+	rNormalizedWheelPosition := -1;
+END_IF 
+
+// Set up load case 
+IF bVeryLightLoad THEN 
+	rLoadMultiplier := 1.0; 
+ELSIF bLightLoad THEN 
+	rLoadMultiplier := 2.0; 
+ELSIF bMediumLoad THEN 
+	rLoadMultiplier := 3.0; 
+ELSIF bModeratelyHeavyLoad THEN 
+	rLoadMultiplier := 4.0; 
+ELSIF bHeavyLoad THEN 
+	rLoadMultiplier := 5.0; 
+ELSE
+	rLoadMultiplier := 1.0; 
+END_IF
+
+// Now command the motor correspondingly. 
+rCommand := -1 * rNormalizedWheelPosition * rLoadMultiplier; 
+fbMotor1(rCommandVoltage := rCommand);
+
+// Update globals for logging 
+GVL.ENCODER_1_COUNTER_VALUE := nEncoder1Counts; 
+GVL.ENCODER_1_DEGREES := rEncoder1Degrees;
+GVL.MOTOR_1_APPLIED_VOLTAGE := rCommand; ]]></ST>
+    </Implementation>
+    <Method Name="Reset" Id="{70fc258a-3469-43c3-95ec-4ff32650e4a8}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMotor1.Reset(); 
+fbEncoder1.Reset(); ]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="MainExperimentBlock">
+      <LineId Id="30" Count="34" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="MainExperimentBlock.Reset">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -10,7 +10,7 @@
       <Children>
         <Node>
           <Title>DataPool</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -26,25 +26,25 @@
               <Children />
             </Node>
             <Node>
+              <Title>ENCODER_1_COUNTER_VALUE</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>ENCODER_1_DEGREES</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>ENCODER_1_RAW_COUNTS</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
             </Node>
             <Node>
-              <Title>nEncoder1Counts</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>rCommand</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
-              <Title>rEncoder1Degrees</Title>
+              <Title>MOTOR_1_APPLIED_VOLTAGE</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -58,11 +58,11 @@
           <Children>
             <Node>
               <Title>Degrees Axis</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>rEncoder1Degrees</Title>
+                  <Title>ENCODER_1_DEGREES</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -71,11 +71,11 @@
             </Node>
             <Node>
               <Title>Counter Axis</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>nEncoder1Counts</Title>
+                  <Title>ENCODER_1_COUNTER_VALUE</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -86,7 +86,7 @@
         </Node>
         <Node>
           <Title>Virtual Spring Testing</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -95,7 +95,7 @@
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>rEncoder1Degrees (1)</Title>
+                  <Title>ENCODER_1_DEGREES (1)</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -108,7 +108,7 @@
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>rCommand</Title>
+                  <Title>MOTOR_1_APPLIED_VOLTAGE</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
@@ -119,34 +119,20 @@
         </Node>
         <Node>
           <Title>Analysis of Phases</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>Degrees Axis (2)</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
-              <Children>
-                <Node>
-                  <Title>rEncoder1Degrees (2)</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-              </Children>
+              <Children />
             </Node>
             <Node>
               <Title>Volts Axis (1)</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
-              <Children>
-                <Node>
-                  <Title>rCommand (1)</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-              </Children>
+              <Children />
             </Node>
             <Node>
               <Title>Axis Group</Title>
@@ -172,12 +158,6 @@
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children>
-                <Node>
-                  <Title>nEncoder1Counts (1)</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
                 <Node>
                   <Title>ENCODER_1_RAW_COUNTS</Title>
                   <Expanded>False</Expanded>

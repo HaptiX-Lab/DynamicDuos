@@ -5,35 +5,57 @@
 VAR
 	
 	// Establish state machine for hardware
-	MASTER_STATE : MasterStateType := MasterStateType.WAITING;	
+	MASTER_STATE : MasterStateType := MasterStateType.WAITING;
+	PREVIOUS_MASTER_STATE : MasterStateType := MasterStateType.WAITING; 
 	MASTER_STATE_STR : STRING := TO_STRING(MASTER_STATE);
 
 	// Establish state machine for GUI
 	WINDOW_STATE : ActiveWindowStateType := ActiveWindowStateType.EXPERIMENT_WINDOW; 
 	
+	// Load submodules 
+	fbMainExperimentBlock : MainExperimentBlock; 
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[MASTER_STATE := MasterStateType.WAITING;
+      <ST><![CDATA[// Update master state string to send to GUI 
 MASTER_STATE_STR := TO_STRING(MASTER_STATE);
 
+// Based on the master state, load different behavior profile. 
 
-IF MASTER_STATE = MasterStateType.ACTIVE THEN
-	MainExperimentLoop(); 
-ELSIF MASTER_STATE = MasterStateType.CALIBRATION THEN
-	CalibrationExperimentLoop();
+// Check to make sure that we command the motor to 0 and reset encoder after we're exiting this state 
+IF PREVIOUS_MASTER_STATE = MasterStateType.ACTIVE AND MASTER_STATE <> MasterStateType.ACTIVE THEN
+	fbMainExperimentBlock.Reset(); 
 END_IF
+
+CASE MASTER_STATE OF
+	MasterStateType.ACTIVE : fbMainExperimentBlock(); 
+	MasterStateType.CALIBRATION : CalibrationExperimentLoop();
+END_CASE
+
+// Update previous master state, recall master state 
+// itself is controlled by GUI
+PREVIOUS_MASTER_STATE := MASTER_STATE; 
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="192" Count="0" />
+      <LineId Id="231" Count="0" />
       <LineId Id="196" Count="0" />
-      <LineId Id="193" Count="0" />
+      <LineId Id="232" Count="0" />
       <LineId Id="222" Count="0" />
-      <LineId Id="151" Count="0" />
-      <LineId Id="223" Count="1" />
-      <LineId Id="230" Count="0" />
-      <LineId Id="226" Count="0" />
+      <LineId Id="245" Count="0" />
+      <LineId Id="244" Count="0" />
+      <LineId Id="242" Count="0" />
+      <LineId Id="246" Count="1" />
+      <LineId Id="241" Count="0" />
+      <LineId Id="233" Count="0" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="249" Count="0" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="250" Count="0" />
       <LineId Id="228" Count="0" />
     </LineIds>
   </POU>
