@@ -22,9 +22,6 @@
     <Compile Include="DUTs\ActiveWindowStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\LoadCaseType.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DUTs\MasterStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -35,7 +32,7 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\CalibrationExperimentLoop.TcPOU">
+    <Compile Include="POUs\CalibrationBlock.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">

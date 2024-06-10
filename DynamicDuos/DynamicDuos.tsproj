@@ -90,7 +90,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{69EC3D46-4B56-67E7-2C92-A86663DB9DF7}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{AEE14888-145E-919F-18A2-59FFD979945C}">
 					<Name>DynamicDuos Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -118,19 +118,38 @@
  works as seemlessly as possible. ]]></Comment>
 							<Type>UDINT</Type>
 						</Var>
+						<Var>
+							<Name>MAIN.fbMainExperimentBlock.fbLoadCell.nAnalogReading</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbCalibrationBlock.fbEncoder1.QE_CHANNEL_COUNTS</Name>
+							<Comment><![CDATA[ This is a single channel of a two-channel quadrature encoder 
+ (if using the EL5122). This QE_CHANNEL object maps all the data
+ we want directly (counts) FROM the device manager 
+ found in the IO tab TO this quadrature encoder block right here. 
+ The quadrature encoder block abstracts any complexity needed 
+ to read/set values in the QE_CHANNEL object so that the device 
+ works as seemlessly as possible. ]]></Comment>
+							<Type>UDINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbCalibrationBlock.fbLoadCell.nAnalogReading</Name>
+							<Type>INT</Type>
+						</Var>
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
 						<Name>PlcTask Outputs</Name>
 						<Var>
-							<Name>MAIN.fbMainExperimentBlock.fbMotor1.nPosAnalogOutput</Name>
+							<Name>MAIN.fbMotor1.nPosAnalogOutput</Name>
 							<Type>INT</Type>
 						</Var>
 						<Var>
-							<Name>MAIN.fbMainExperimentBlock.fbMotor1.nNegAnalogOutput</Name>
+							<Name>MAIN.fbMotor1.nNegAnalogOutput</Name>
 							<Type>INT</Type>
 						</Var>
 						<Var>
-							<Name>MAIN.fbMainExperimentBlock.fbMotor1.nZeroRefAnalogOutput</Name>
+							<Name>MAIN.fbMotor1.nZeroRefAnalogOutput</Name>
 							<Type>INT</Type>
 						</Var>
 					</Vars>
@@ -196,13 +215,6 @@
 								<Link VarA="MAIN.fbEncoder1.QE_CHANNEL_COUNTS" TypeA="UDINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000008}" VarB="ENC Status Channel 1^Counter value" RestoreInfo="ANotFound"/>
 							</OwnerB>
 						</OwnerA>
-						<OwnerA Name="OutputSrc" Prefix="TIPC^DynamicDuos^DynamicDuos Instance" Type="2">
-							<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 2 (EL4038)">
-								<Link VarA="MAIN.fbMotor1.nNegAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 2^Analog output" RestoreInfo="ANotFound"/>
-								<Link VarA="MAIN.fbMotor1.nPosAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 1^Analog output" RestoreInfo="ANotFound"/>
-								<Link VarA="MAIN.fbMotor1.nZeroRefAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 3^Analog output" RestoreInfo="ANotFound"/>
-							</OwnerB>
-						</OwnerA>
 					</UnrestoredVarLinks>
 					<UnrestoredVarLinks ImportTime="2024-05-27T23:29:37">
 						<OwnerA Name="InputDst" Prefix="TIPC^DynamicDuos^DynamicDuos Instance" Type="1">
@@ -215,6 +227,18 @@
 								<Link VarA="MainExperimentLoop.fbMotor1.nNegAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 2^Analog output" RestoreInfo="ANotFound"/>
 								<Link VarA="MainExperimentLoop.fbMotor1.nPosAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 1^Analog output" RestoreInfo="ANotFound"/>
 								<Link VarA="MainExperimentLoop.fbMotor1.nZeroRefAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 3^Analog output" RestoreInfo="ANotFound"/>
+							</OwnerB>
+						</OwnerA>
+					</UnrestoredVarLinks>
+					<UnrestoredVarLinks ImportTime="2024-06-10T15:47:12">
+						<OwnerA Name="OutputSrc" Prefix="TIPC^DynamicDuos^DynamicDuos Instance" Type="2">
+							<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 2 (EL4038)">
+								<Link VarA="MAIN.fbCalibrationBlock.fbMotor1.nNegAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 2^Analog output" RestoreInfo="ANotFound"/>
+								<Link VarA="MAIN.fbCalibrationBlock.fbMotor1.nPosAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 1^Analog output" RestoreInfo="ANotFound"/>
+								<Link VarA="MAIN.fbCalibrationBlock.fbMotor1.nZeroRefAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 3^Analog output" RestoreInfo="ANotFound"/>
+								<Link VarA="MAIN.fbMainExperimentBlock.fbMotor1.nNegAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 2^Analog output" RestoreInfo="ANotFound"/>
+								<Link VarA="MAIN.fbMainExperimentBlock.fbMotor1.nPosAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 1^Analog output" RestoreInfo="ANotFound"/>
+								<Link VarA="MAIN.fbMainExperimentBlock.fbMotor1.nZeroRefAnalogOutput" TypeA="INT" InOutA="1" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AO Outputs Channel 3^Analog output" RestoreInfo="ANotFound"/>
 							</OwnerB>
 						</OwnerA>
 					</UnrestoredVarLinks>
@@ -1284,14 +1308,19 @@ Bit1: Value smaller than Limit2]]></Comment>
 		<MappingInfo Identifier="{00000000-2001-0850-0020-500810000403}" Id="#x02030010"/>
 		<OwnerA Name="TIPC^DynamicDuos^DynamicDuos Instance">
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 2 (EL4038)">
-				<Link VarA="PlcTask Outputs^MAIN.fbMainExperimentBlock.fbMotor1.nNegAnalogOutput" VarB="AO Outputs Channel 2^Analog output"/>
-				<Link VarA="PlcTask Outputs^MAIN.fbMainExperimentBlock.fbMotor1.nPosAnalogOutput" VarB="AO Outputs Channel 1^Analog output"/>
-				<Link VarA="PlcTask Outputs^MAIN.fbMainExperimentBlock.fbMotor1.nZeroRefAnalogOutput" VarB="AO Outputs Channel 3^Analog output"/>
+				<Link VarA="PlcTask Outputs^MAIN.fbMotor1.nNegAnalogOutput" VarB="AO Outputs Channel 2^Analog output"/>
+				<Link VarA="PlcTask Outputs^MAIN.fbMotor1.nPosAnalogOutput" VarB="AO Outputs Channel 1^Analog output"/>
+				<Link VarA="PlcTask Outputs^MAIN.fbMotor1.nZeroRefAnalogOutput" VarB="AO Outputs Channel 3^Analog output"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 3 (EL3174)">
+				<Link VarA="PlcTask Inputs^MAIN.fbCalibrationBlock.fbLoadCell.nAnalogReading" VarB="AI Standard Channel 1^Value"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbMainExperimentBlock.fbLoadCell.nAnalogReading" VarB="AI Standard Channel 1^Value"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 4 (EL5122)">
 				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_A_STATUS" VarB="ENC Status Channel 1^Status of input A"/>
 				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_B_STATUS" VarB="ENC Status Channel 1^Status of input B"/>
 				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_RAW_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbCalibrationBlock.fbEncoder1.QE_CHANNEL_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 				<Link VarA="PlcTask Inputs^MAIN.fbMainExperimentBlock.fbEncoder1.QE_CHANNEL_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 			</OwnerB>
 		</OwnerA>

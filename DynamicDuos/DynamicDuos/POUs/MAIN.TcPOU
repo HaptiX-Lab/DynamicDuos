@@ -14,6 +14,11 @@ VAR
 	
 	// Load submodules 
 	fbMainExperimentBlock : MainExperimentBlock; 
+	fbCalibrationBlock : CalibrationBlock;
+	
+	// Motor commands (and other outputs), need to be commanded 
+	// by a top level function if multiple objects are going to control it. 
+	fbMotor1 : FB_AnalogMotorDriver; 
 	
 END_VAR
 ]]></Declaration>
@@ -22,15 +27,28 @@ END_VAR
 MASTER_STATE_STR := TO_STRING(MASTER_STATE);
 
 // Based on the master state, load different behavior profile. 
-
-// Check to make sure that we command the motor to 0 and reset encoder after we're exiting this state 
+// Check to make sure that we reset a block's behavior after leaving it.
 IF PREVIOUS_MASTER_STATE = MasterStateType.ACTIVE AND MASTER_STATE <> MasterStateType.ACTIVE THEN
 	fbMainExperimentBlock.Reset(); 
+	fbMotor1.Reset(); 
+END_IF
+IF PREVIOUS_MASTER_STATE = MasterStateType.CALIBRATION AND MASTER_STATE <> MasterStateType.CALIBRATION THEN
+	fbCalibrationBlock.Reset();
+	fbMotor1.Reset(); 
 END_IF
 
+
 CASE MASTER_STATE OF
-	MasterStateType.ACTIVE : fbMainExperimentBlock(); 
-	MasterStateType.CALIBRATION : CalibrationExperimentLoop();
+	MasterStateType.ACTIVE : 
+		fbMainExperimentBlock();
+		// Apply command voltage
+		fbMotor1(rCommandVoltage := fbMainExperimentBlock.rCommand); 
+ 
+	MasterStateType.CALIBRATION : 
+		fbCalibrationBlock();
+		// Apply command voltage 
+		fbMotor1(rCommandVoltage := fbCalibrationBlock.rCommand); 
+	
 END_CASE
 
 // Update previous master state, recall master state 
@@ -43,14 +61,25 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
       <LineId Id="196" Count="0" />
       <LineId Id="232" Count="0" />
       <LineId Id="222" Count="0" />
-      <LineId Id="245" Count="0" />
       <LineId Id="244" Count="0" />
       <LineId Id="242" Count="0" />
-      <LineId Id="246" Count="1" />
+      <LineId Id="246" Count="0" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="247" Count="0" />
+      <LineId Id="267" Count="0" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="272" Count="0" />
       <LineId Id="241" Count="0" />
       <LineId Id="233" Count="0" />
       <LineId Id="235" Count="0" />
+      <LineId Id="278" Count="0" />
+      <LineId Id="281" Count="0" />
+      <LineId Id="279" Count="1" />
       <LineId Id="237" Count="0" />
+      <LineId Id="284" Count="2" />
+      <LineId Id="283" Count="0" />
       <LineId Id="236" Count="0" />
       <LineId Id="249" Count="0" />
       <LineId Id="248" Count="0" />

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="CalibrationBlock" Id="{808fb392-0321-4ad3-ac5f-7deb84640061}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK CalibrationBlock
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+
+	// Variables for logging 
+	nEncoder1Counts : LINT; 
+	rEncoder1Degrees : REAL; 	
+	
+	// Variables for motor control 
+	rCommand : REAL; 
+	
+	// Variables for load cell 
+	rGripForce : REAL; 
+
+END_VAR
+VAR
+	
+	// Variables to keep track of the actual encoder/motor setup
+	fbEncoder1 : FB_QuadratureEncoder; 
+	fbLoadCell : FB_AnalogLoadCellInput; 
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Read sensors on current iteration
+
+// Encoders 
+fbEncoder1(); 
+nEncoder1Counts := fbEncoder1.nNetCounts; 
+rEncoder1Degrees := fbEncoder1.rDegrees; 
+
+// Load cell 
+fbLoadCell(); 
+rGripForce := fbLoadCell.rCalibratedOutput; 
+
+// Now command the motor correspondingly. 
+rCommand := 0; 
+
+GVL.ENCODER_1_COUNTER_VALUE := nEncoder1Counts; 
+GVL.ENCODER_1_DEGREES := rEncoder1Degrees; 
+GVL.MOTOR_1_APPLIED_VOLTAGE := rCommand;
+GVL.LOAD_CELL_NEWTONS := rGripForce; ]]></ST>
+    </Implementation>
+    <Method Name="Reset" Id="{3efb2b45-adfc-4639-850c-d3b8867d9734}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbEncoder1.Reset(); ]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="CalibrationBlock">
+      <LineId Id="30" Count="8" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="47" Count="2" />
+    </LineIds>
+    <LineIds Name="CalibrationBlock.Reset">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

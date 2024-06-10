@@ -18,13 +18,16 @@ VAR_OUTPUT
 	// Variables for virtual spring 
 	rNormalizedWheelPosition : REAL;  
 	rCommand : REAL; 		
+	
+	// Variables for load cell 
+	rGripForce : REAL; 
 
 END_VAR
 VAR
 	
 	// Variables to keep track of the actual encoder/motor setup 
 	fbEncoder1 : FB_QuadratureEncoder;
-	fbMotor1 : FB_AnalogMotorDriver; 
+	fbLoadCell : FB_AnalogLoadCellInput; 
 	
 	// Intermediate variables for virtual spring
 	rLoadMultiplier : REAL := 1;
@@ -32,9 +35,16 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbEncoder1(); 
+      <ST><![CDATA[// Read sensors on current iteration
+
+// Encoders 
+fbEncoder1(); 
 nEncoder1Counts := fbEncoder1.nNetCounts; 
 rEncoder1Degrees := fbEncoder1.rDegrees; 
+
+// Load cell 
+fbLoadCell(); 
+rGripForce := fbLoadCell.rCalibratedOutput; 
 
 // Scale between 0 and 90 
 rNormalizedWheelPosition := rEncoder1Degrees / 120.0; 
@@ -62,12 +72,12 @@ END_IF
 
 // Now command the motor correspondingly. 
 rCommand := -1 * rNormalizedWheelPosition * rLoadMultiplier; 
-fbMotor1(rCommandVoltage := rCommand);
 
 // Update globals for logging 
 GVL.ENCODER_1_COUNTER_VALUE := nEncoder1Counts; 
 GVL.ENCODER_1_DEGREES := rEncoder1Degrees;
-GVL.MOTOR_1_APPLIED_VOLTAGE := rCommand; ]]></ST>
+GVL.MOTOR_1_APPLIED_VOLTAGE := rCommand; 
+GVL.LOAD_CELL_NEWTONS := rGripForce; ]]></ST>
     </Implementation>
     <Method Name="Reset" Id="{70fc258a-3469-43c3-95ec-4ff32650e4a8}">
       <Declaration><![CDATA[METHOD Reset : BOOL
@@ -75,16 +85,24 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbMotor1.Reset(); 
-fbEncoder1.Reset(); ]]></ST>
+        <ST><![CDATA[fbEncoder1.Reset(); ]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="MainExperimentBlock">
-      <LineId Id="30" Count="34" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="30" Count="2" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="33" Count="26" />
+      <LineId Id="61" Count="3" />
       <LineId Id="9" Count="0" />
+      <LineId Id="106" Count="0" />
     </LineIds>
     <LineIds Name="MainExperimentBlock.Reset">
-      <LineId Id="6" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>

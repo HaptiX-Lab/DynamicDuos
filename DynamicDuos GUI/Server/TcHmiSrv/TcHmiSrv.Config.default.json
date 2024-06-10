@@ -36,7 +36,8 @@
             },
             "enum": [
                 0,
-                1
+                1,
+                2
             ],
             "options": [
                 {
@@ -46,6 +47,10 @@
                 {
                     "label": "CALIBRATION_WINDOW",
                     "value": 1
+                },
+                {
+                    "label": "PARTICIPANT_WINDOW",
+                    "value": 2
                 }
             ],
             "type": "integer"
@@ -93,8 +98,8 @@
                 "qualified_only": "",
                 "strict": "",
                 "to_string": "",
-                "to_string_function": "__TO_STRING__675",
-                "to_wstring_function": "__TO_WSTRING__675"
+                "to_string_function": "__TO_STRING__136",
+                "to_wstring_function": "__TO_WSTRING__136"
             },
             "enum": [
                 0,
@@ -2620,6 +2625,16 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.GVL.LOAD_CELL_NEWTONS": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::GVL::LOAD_CELL_NEWTONS",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
         "PLC1.GVL.MOTOR_1_APPLIED_VOLTAGE": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2638,7 +2653,7 @@
             "SCHEMA": {
                 "allOf": [
                     {
-                        "comment": "Establish state machine"
+                        "comment": "Establish state machine for hardware"
                     },
                     {
                         "$ref": "tchmi:server#/definitions/PLC1.MasterStateType"
@@ -7492,6 +7507,7 @@
                 "Login": 3,
                 "Logout": 3,
                 "PLC1.GVL.ENCODER_1_DEGREES": 3,
+                "PLC1.GVL.LOAD_CELL_NEWTONS": 3,
                 "PLC1.GVL.MOTOR_1_APPLIED_VOLTAGE": 3,
                 "PLC1.MAIN.MASTER_STATE": 3,
                 "PLC1.MAIN.MASTER_STATE_STR": 3,
