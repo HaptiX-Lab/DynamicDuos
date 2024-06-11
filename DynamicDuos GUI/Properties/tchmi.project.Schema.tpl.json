@@ -1,4 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "definitions": {}
+  "definitions": {
+    "GripForceSchedule": {
+      "frameworkControlNamespace": "TcHmi.Controls.Beckhoff",
+      "frameworkControlType": "TcHmi.Controls.System.TcHmiUserControl",
+      "frameworkInstanceOf": "TcHmi.Controls.System.TcHmiControl",
+      "frameworkUserControlConfig": "Contents\\CalibrationDashboard_Components\\GripForceSchedule.usercontrol.json",
+      "type": "object",
+      "id": "tchmi:project#/definitions/GripForceSchedule"
+    }
+  }
 }

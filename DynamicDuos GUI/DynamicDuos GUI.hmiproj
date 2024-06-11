@@ -113,6 +113,7 @@
   <Target Name="Clean" DependsOnTargets="$(CleanDependsOn)" />
   <Target Name="ReBuild" DependsOnTargets="Clean; Build" />
   <ItemGroup>
+    <Folder Include="Contents\CalibrationDashboard_Components" />
     <Folder Include="Fonts\" />
     <Folder Include="Images" />
     <Folder Include="Images\Manifest" />
@@ -135,6 +136,25 @@
       <Visible>false</Visible>
     </Content>
     <Content Include="Contents\CalibrationDashboard.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\GripForceSchedule.usercontrol">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\GripForceSchedule.usercontrol.json">
+      <SubType>Content</SubType>
+      <DependentUpon>Contents\CalibrationDashboard_Components\GripForceSchedule.usercontrol</DependentUpon>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\PulseControlsOptions.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\GripTriggerOptions.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\ManualPulseOptions.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\TriggerTypeUnselected.content">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Contents\ExperimentDashboard.content">

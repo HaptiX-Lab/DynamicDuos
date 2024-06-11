@@ -2689,6 +2689,41 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::nMaxTrialNumber",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/UINT"
+                    },
+                    {
+                        "propertyOrder": 5
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::nTrialNumber",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/UINT"
+                    },
+                    {
+                        "comment": "Number of calibration trials to run in succession",
+                        "propertyOrder": 10
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -7512,6 +7547,8 @@
                 "PLC1.MAIN.MASTER_STATE": 3,
                 "PLC1.MAIN.MASTER_STATE_STR": 3,
                 "PLC1.MAIN.WINDOW_STATE": 3,
+                "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": 3,
+                "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bLightLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bMediumLoad": 3,

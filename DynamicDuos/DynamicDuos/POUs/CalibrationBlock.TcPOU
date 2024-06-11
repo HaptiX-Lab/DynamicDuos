@@ -17,16 +17,44 @@ VAR_OUTPUT
 	rGripForce : REAL; 
 
 END_VAR
+
+// Constants used for the program 
+VAR CONSTANT
+	nMaxTrialNumber : UINT := 10; 
+END_VAR
+
 VAR
 	
 	// Variables to keep track of the actual encoder/motor setup
 	fbEncoder1 : FB_QuadratureEncoder; 
 	fbLoadCell : FB_AnalogLoadCellInput; 
+	
+	// State variabels for interacting with the GUI
+	bTestIsActive : BOOL; // Whether or not there is a current test running
+	
+	// 1. Test type
+	bTestTypeHuman : BOOL; // Whether or not this a human or motor test 
+	bTestTypeHumanLIVE : BOOL; 
+	
+	// 2. Number of trials
+	nTrialNumber : UINT := 1; // Number of calibration trials to run in succession 
+	nTrialNumberLIVE : UINT; 
+	
+	// 3. Trigger type
+	bManualPulse : BOOL; // Whether to use manual pulse or grip schedule. 
+	bManualPulseLIVE : BOOL; 
+	
+	// 4. Trigger controls
+	aGripSchedule : ARRAY[1..nMaxTrialNumber] OF REAL; 
+	
 
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Read sensors on current iteration
+      <ST><![CDATA[// Update settings sent from GUI. 
+nTrialNumberLIVE := nTrialNumber; 
+
+// Read sensors on current iteration
 
 // Encoders 
 fbEncoder1(); 
@@ -55,6 +83,9 @@ END_VAR
       </Implementation>
     </Method>
     <LineIds Name="CalibrationBlock">
+      <LineId Id="72" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="73" Count="0" />
       <LineId Id="30" Count="8" />
       <LineId Id="28" Count="0" />
       <LineId Id="43" Count="0" />
