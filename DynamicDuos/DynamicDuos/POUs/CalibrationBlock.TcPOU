@@ -43,8 +43,12 @@ VAR
 	// 3. Trigger type
 	bManualPulse : BOOL; // Whether to use manual pulse or grip schedule. 
 	bManualPulseLIVE : BOOL; 
+	bManualPulseTimerEnable : BOOL; 
+	bManualPulseTimerValue : REAL; 
+	bManualPulseTrigger : BOOL; 
 	
 	// 4. Trigger controls
+	bUseConstantGripTriger : BOOL;
 	aGripSchedule : ARRAY[1..nMaxTrialNumber] OF REAL; 
 	
 

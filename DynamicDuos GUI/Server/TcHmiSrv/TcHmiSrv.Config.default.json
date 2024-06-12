@@ -2689,6 +2689,58 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.bManualPulse": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bManualPulse",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "Whether to use manual pulse or grip schedule.",
+                        "propertyOrder": 13
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerEnable": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bManualPulseTimerEnable",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "propertyOrder": 15
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerValue": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bManualPulseTimerValue",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/REAL"
+                    },
+                    {
+                        "propertyOrder": 16
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -7547,6 +7599,10 @@
                 "PLC1.MAIN.MASTER_STATE": 3,
                 "PLC1.MAIN.MASTER_STATE_STR": 3,
                 "PLC1.MAIN.WINDOW_STATE": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bManualPulse": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerEnable": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerValue": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bTestTypeHuman": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": 3,
