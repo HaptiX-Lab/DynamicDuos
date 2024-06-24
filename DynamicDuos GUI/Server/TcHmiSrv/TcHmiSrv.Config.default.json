@@ -2689,6 +2689,106 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.0": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[0]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.1": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[1]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.2": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[2]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.3": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[3]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.4": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[4]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.5": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[5]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.6": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[6]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.7": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[7]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.8": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[8]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.9": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::aGripSchedule[9]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbCalibrationBlock.bManualPulse": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2741,6 +2841,60 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.bTestTypeHuman": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bTestTypeHuman",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "Whether or not this a human or motor test",
+                        "propertyOrder": 9
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTriger": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bUseConstantGripTriger",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "4. Trigger controls",
+                        "propertyOrder": 18
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.bUseConstantPulseTorque": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bUseConstantPulseTorque",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "5. Pulse controls",
+                        "propertyOrder": 20
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2771,6 +2925,23 @@
                     {
                         "comment": "Number of calibration trials to run in succession",
                         "propertyOrder": 10
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.rConstantTorqueSetting": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::rConstantTorqueSetting",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/REAL"
+                    },
+                    {
+                        "propertyOrder": 21
                     }
                 ]
             },
@@ -7599,12 +7770,25 @@
                 "PLC1.MAIN.MASTER_STATE": 3,
                 "PLC1.MAIN.MASTER_STATE_STR": 3,
                 "PLC1.MAIN.WINDOW_STATE": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.0": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.1": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.2": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.3": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.4": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.5": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.6": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.7": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.8": 3,
+                "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.9": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulse": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerEnable": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerValue": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bTestTypeHuman": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTriger": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bUseConstantPulseTorque": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": 3,
+                "PLC1.MAIN.fbCalibrationBlock.rConstantTorqueSetting": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bLightLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bMediumLoad": 3,

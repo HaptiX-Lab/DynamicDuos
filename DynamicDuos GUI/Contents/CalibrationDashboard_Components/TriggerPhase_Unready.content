@@ -1,0 +1,25 @@
+<div id="TriggerPhase_Unready" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="932" data-tchmi-height="230" data-tchmi-zindex="1">
+
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(64, 152, 222, 1)"
+}
+</script>
+<div id="TcHmiLine" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLine" data-tchmi-height="210" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="912" data-tchmi-width-unit="px" data-tchmi-x2="912" data-tchmi-y2="200" data-tchmi-width-mode="Value" data-tchmi-height-mode="Value" data-tchmi-zindex="1" data-tchmi-stroke-thickness="5">
+
+<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
+{
+  "color": "rgba(255, 14, 14, 1)"
+}
+</script>
+</div>
+<div id="TcHmiLine_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLine" data-tchmi-height="210" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="912" data-tchmi-width-unit="px" data-tchmi-x2="912" data-tchmi-y2="0" data-tchmi-width-mode="Value" data-tchmi-height-mode="Value" data-tchmi-y1="200" data-tchmi-stroke-thickness="5" data-tchmi-zindex="0">
+
+<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
+{
+  "color": "rgba(255, 14, 14, 1)"
+}
+</script>
+</div>
+</div>

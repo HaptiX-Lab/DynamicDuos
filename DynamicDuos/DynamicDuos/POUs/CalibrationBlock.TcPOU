@@ -51,6 +51,9 @@ VAR
 	bUseConstantGripTriger : BOOL;
 	aGripSchedule : ARRAY[1..nMaxTrialNumber] OF REAL; 
 	
+	// 5. Pulse controls 
+	bUseConstantPulseTorque : BOOL; 
+	rConstantTorqueSetting : REAL; 	
 
 END_VAR
 ]]></Declaration>

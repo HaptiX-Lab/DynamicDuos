@@ -154,6 +154,12 @@
     <Content Include="Contents\CalibrationDashboard_Components\ManualPulseOptions.content">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\TriggerPhase_Monitor.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\CalibrationDashboard_Components\TriggerPhase_Unready.content">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Contents\CalibrationDashboard_Components\TriggerTypeUnselected.content">
       <SubType>Content</SubType>
     </Content>
