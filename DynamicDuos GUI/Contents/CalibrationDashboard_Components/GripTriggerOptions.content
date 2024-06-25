@@ -1,6 +1,6 @@
 <div id="GripTriggerOptions" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="200" data-tchmi-height="150">
 
-<div id="ConstantGripForceTriggerRadioButton" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="24" data-tchmi-height-unit="px" data-tchmi-left="5" data-tchmi-left-unit="px" data-tchmi-text="Constant Grip Force Trigger (N)" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="185" data-tchmi-width-unit="px" data-tchmi-radio-group="Calibration_TriggerType_Suboptions" data-tchmi-state-symbol="%s%PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTriger%/s%">
+<div id="ConstantGripForceTriggerRadioButton" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="24" data-tchmi-height-unit="px" data-tchmi-left="5" data-tchmi-left-unit="px" data-tchmi-text="Constant Grip Force Trigger (N)" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="185" data-tchmi-width-unit="px" data-tchmi-radio-group="Calibration_TriggerType_Suboptions" data-tchmi-state-symbol="%s%PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTrigger%/s%">
 
 <script data-tchmi-target-attribute="data-tchmi-text-color" type="application/json">
 {

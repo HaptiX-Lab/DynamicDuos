@@ -22,6 +22,9 @@
     <Compile Include="DUTs\ActiveWindowStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\CalibStateType.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\MasterStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>

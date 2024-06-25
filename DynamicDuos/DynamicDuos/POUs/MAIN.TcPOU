@@ -45,9 +45,9 @@ CASE MASTER_STATE OF
 		fbMotor1(rCommandVoltage := fbMainExperimentBlock.rCommand); 
  
 	MasterStateType.CALIBRATION : 
-		fbCalibrationBlock();
+		fbCalibrationBlock(fbMotorReference := fbMotor1);
 		// Apply command voltage 
-		fbMotor1(rCommandVoltage := fbCalibrationBlock.rCommand); 
+		// fbMotor1(rCommandVoltage := fbCalibrationBlock.rCommand); 
 	
 END_CASE
 

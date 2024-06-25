@@ -3,6 +3,9 @@
   <POU Name="CalibrationBlock" Id="{808fb392-0321-4ad3-ac5f-7deb84640061}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK CalibrationBlock
 VAR_INPUT
+
+	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 	
+
 END_VAR
 VAR_OUTPUT
 
@@ -27,11 +30,11 @@ VAR
 	
 	// Variables to keep track of the actual encoder/motor setup
 	fbEncoder1 : FB_QuadratureEncoder; 
-	fbLoadCell : FB_AnalogLoadCellInput; 
+	fbLoadCell : FB_AnalogLoadCellInput; // TODO: Change everything to top level reference maybe? 
 	
-	// State variabels for interacting with the GUI
-	bTestIsActive : BOOL; // Whether or not there is a current test running
-	
+	////// BEGIN GUI TEST OPTIONS
+	//// All fields in the next section are in some way or another set by the GUI, and define 
+	//// the type of test to take place.
 	// 1. Test type
 	bTestTypeHuman : BOOL; // Whether or not this a human or motor test 
 	bTestTypeHumanLIVE : BOOL; 
@@ -44,25 +47,41 @@ VAR
 	bManualPulse : BOOL; // Whether to use manual pulse or grip schedule. 
 	bManualPulseLIVE : BOOL; 
 	bManualPulseTimerEnable : BOOL; 
-	bManualPulseTimerValue : REAL; 
-	bManualPulseTrigger : BOOL; 
+	bManualPulseTimerEnableLIVE : BOOL;
+	rManualPulseTimerValue : REAL; 
+	rManualPulseTimerValueLIVE : REAL;
 	
 	// 4. Trigger controls
-	bUseConstantGripTriger : BOOL;
-	aGripSchedule : ARRAY[1..nMaxTrialNumber] OF REAL; 
+	bUseConstantGripTrigger : BOOL;
+	bUseConstantGripTriggerLIVE : BOOL;
+	aGripSchedule : ARRAY[1..nMaxTrialNumber] OF REAL;
+	aGripScheduleLIVE : ARRAY[1..nMaxTrialNumber] OF REAL;  
 	
 	// 5. Pulse controls 
 	bUseConstantPulseTorque : BOOL; 
+	bUseConstantPulseTorqueLIVE : BOOL;
 	rConstantTorqueSetting : REAL; 	
+	rConstantTorqueSettingLIVE : REAL;
+
+	// 6. Test Controls
+	bLaunchTestSequence : BOOL := FALSE; // Triggers an entry into the testing loop. 
+ 
+	/////// END GUI TEST OPTIONS
+	
+	// State machine for actual calibration logic. 
+	// At the begginning, we are in the configuration state. 
+	eSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
+	eNextSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
+	nCurrentTestIndex : INT := -1; 
+	bTestIsLive : BOOL := FALSE; 
+	
+	// Helper variables 
+	i : UINT; 
 
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Update settings sent from GUI. 
-nTrialNumberLIVE := nTrialNumber; 
-
-// Read sensors on current iteration
-
+      <ST><![CDATA[///////////// Read sensors on current iteration
 // Encoders 
 fbEncoder1(); 
 nEncoder1Counts := fbEncoder1.nNetCounts; 
@@ -71,9 +90,59 @@ rEncoder1Degrees := fbEncoder1.rDegrees;
 // Load cell 
 fbLoadCell(); 
 rGripForce := fbLoadCell.rCalibratedOutput; 
+///////////// End sensor reading 
 
-// Now command the motor correspondingly. 
-rCommand := 0; 
+// Now we go through the calibration logic. 
+CASE eSequenceState OF
+	
+	// The user is currently setting permissions, we can update them live. 
+	CalibStateType.PRE_LAUNCH:
+	
+		// First we start by updating options to the LIVE variables. 
+		bTestTypeHumanLIVE := bTestTypeHuman; 
+		nTrialNumberLIVE := nTrialNumber; 
+		bManualPulseLIVE := bManualPulse; 
+		bManualPulseTimerEnableLIVE := bManualPulseTimerEnable; 
+		rManualPulseTimerValueLIVE := rManualPulseTimerValue;
+		bUseConstantGripTriggerLIVE := bUseConstantGripTrigger; 
+		
+		FOR i := 1 TO nMaxTrialNumber DO
+			aGripScheduleLIVE[i] := aGripSchedule[i]; 
+		END_FOR
+		
+		bUseConstantPulseTorqueLIVE := bUseConstantPulseTorque;
+		rConstantTorqueSettingLIVE := rConstantTorqueSetting; 
+		
+		IF bLaunchTestSequence THEN
+			eNextSequenceState := CalibStateType.TEST_SETUP; 
+			// Also set the first test index 
+			nCurrentTestIndex := 0; 
+			// And put this signal back down 
+			bLaunchTestSequence := FALSE; 
+		ELSE
+			eNextSequenceState := CalibStateType.PRE_LAUNCH; 
+		END_IF
+		
+	// We are getting the test ready. 
+	CalibStateType.TEST_SETUP: 
+	
+		// In this state, we need to recenter the motor back to the 0 point, and we also need to wait 
+		// for the triggering signal. This signal is either going to be a timer, a manual button, or a grip threshold. 
+		// We need to additionally resolve this for the test to commence. 
+		
+		// We can start by returning the motor to the homing position, which we can do with a simple PID
+		rCommand := -1 * 3 * ((3/2) * (fbEncoder1.rDegrees / 90) - (1/2) * (fbEncoder1.rLastDegrees / 90));
+		fbMotorReference(rCommandVoltage := rCommand); 
+		
+		// Then we check to see if the test going live conditions are met: 
+		IF bTestIsLive THEN
+			eNextSequenceState := CalibStateType.TEST_ACTIVE; 
+		END_IF
+
+END_CASE
+
+// Update state for next iteration
+eSequenceState := eNextSequenceState; 
 
 GVL.ENCODER_1_COUNTER_VALUE := nEncoder1Counts; 
 GVL.ENCODER_1_DEGREES := rEncoder1Degrees; 
@@ -90,14 +159,36 @@ END_VAR
       </Implementation>
     </Method>
     <LineIds Name="CalibrationBlock">
-      <LineId Id="72" Count="0" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="73" Count="0" />
-      <LineId Id="30" Count="8" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="6" />
       <LineId Id="28" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="44" Count="0" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="156" Count="1" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="162" Count="2" />
+      <LineId Id="166" Count="4" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="172" Count="1" />
+      <LineId Id="179" Count="1" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="181" Count="1" />
+      <LineId Id="194" Count="2" />
+      <LineId Id="214" Count="1" />
+      <LineId Id="223" Count="1" />
+      <LineId Id="197" Count="2" />
+      <LineId Id="201" Count="2" />
+      <LineId Id="221" Count="0" />
+      <LineId Id="205" Count="4" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="216" Count="4" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="186" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="45" Count="0" />
       <LineId Id="47" Count="2" />

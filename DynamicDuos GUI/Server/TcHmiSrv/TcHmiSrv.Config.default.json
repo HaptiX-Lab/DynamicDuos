@@ -55,6 +55,43 @@
             ],
             "type": "integer"
         },
+        "PLC1.CalibStateType": {
+            "attributes": {
+                "generate_implicit_init_function": "",
+                "qualified_only": "",
+                "strict": ""
+            },
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                -1
+            ],
+            "options": [
+                {
+                    "label": "PRE_LAUNCH",
+                    "value": 0
+                },
+                {
+                    "label": "TEST_SETUP",
+                    "value": 1
+                },
+                {
+                    "label": "TEST_ACTIVE",
+                    "value": 2
+                },
+                {
+                    "label": "TEST_FINISHED",
+                    "value": 3
+                },
+                {
+                    "label": "ABORT",
+                    "value": -1
+                }
+            ],
+            "type": "integer"
+        },
         "PLC1.LoadCaseType": {
             "attributes": {
                 "generate_implicit_init_function": "",
@@ -2789,6 +2826,24 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.bLaunchTestSequence": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bLaunchTestSequence",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "Triggers an entry into the testing loop.",
+                        "propertyOrder": 27
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbCalibrationBlock.bManualPulse": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2877,6 +2932,24 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTrigger": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bUseConstantGripTrigger",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "4. Trigger controls",
+                        "propertyOrder": 20
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbCalibrationBlock.bUseConstantPulseTorque": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2890,6 +2963,24 @@
                     {
                         "comment": "5. Pulse controls",
                         "propertyOrder": 20
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.eSequenceState": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::eSequenceState",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.CalibStateType"
+                    },
+                    {
+                        "comment": "//// END GUI TEST OPTIONS",
+                        "propertyOrder": 28
                     }
                 ]
             },
@@ -2942,6 +3033,23 @@
                     },
                     {
                         "propertyOrder": 21
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.rManualPulseTimerValue": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::rManualPulseTimerValue",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/REAL"
+                    },
+                    {
+                        "propertyOrder": 17
                     }
                 ]
             },
@@ -7780,15 +7888,19 @@
                 "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.7": 3,
                 "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.8": 3,
                 "PLC1.MAIN.fbCalibrationBlock.aGripSchedule.9": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bLaunchTestSequence": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulse": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerEnable": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerValue": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bTestTypeHuman": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTriger": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTrigger": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bUseConstantPulseTorque": 3,
+                "PLC1.MAIN.fbCalibrationBlock.eSequenceState": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.rConstantTorqueSetting": 3,
+                "PLC1.MAIN.fbCalibrationBlock.rManualPulseTimerValue": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bLightLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bMediumLoad": 3,
