@@ -90,7 +90,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{01E5B4D5-EEAF-A190-3FE1-CCC8853F08E5}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{62CB6A31-8674-C7F7-440D-EA175F03DEB6}">
 					<Name>DynamicDuos Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">

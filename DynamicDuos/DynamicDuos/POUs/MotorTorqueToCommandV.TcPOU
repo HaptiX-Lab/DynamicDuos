@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MotorTorqueToCommandV" Id="{23c9369d-82a8-4269-8433-4afd0130b38e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION MotorTorqueToCommandV : REAL // Calculates the voltage to send to the motor given a requested torque
+// NOTE: Needs to be calibrated from time to time. 
+VAR_INPUT
+	rCommandTorque : REAL; // N-m
+END_VAR
+VAR
+	// Equation is of the form rCommandVoltage = rVoltageSlope*(rCommandTorque) + rVoltageIntercept
+	// Exact values are found from calibration. 
+	rVoltageSlope : REAL := 9.26; 
+	rVoltageIntercept : REAL := 0.0758; 
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[MotorTorqueToCommandV := rVoltageSlope * rCommandTorque + rVoltageIntercept; ]]></ST>
+    </Implementation>
+    <LineIds Name="MotorTorqueToCommandV">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -46,14 +46,28 @@ rEncoder1Degrees := fbEncoder1.rDegrees;
 fbLoadCell(); 
 rGripForce := fbLoadCell.rCalibratedOutput; 
 
-// Scale between 0 and 90 
-rNormalizedWheelPosition := rEncoder1Degrees / 120.0; 
+//// Scale between 0 and 90 
+//rNormalizedWheelPosition := rEncoder1Degrees / 120.0; 
+
+//IF rNormalizedWheelPosition > 1 THEN 
+//	rNormalizedWheelPosition := 1;
+//ELSIF rNormalizedWheelPosition < -1 THEN 
+//	rNormalizedWheelPosition := -1;
+//END_IF 
+
+// TESTING FOR VIRTUAL WALL
+rNormalizedWheelPosition := rEncoder1Degrees / 2.5; 
 
 IF rNormalizedWheelPosition > 1 THEN 
 	rNormalizedWheelPosition := 1;
 ELSIF rNormalizedWheelPosition < -1 THEN 
 	rNormalizedWheelPosition := -1;
 END_IF 
+
+IF rEncoder1Degrees < 0 THEN
+	rNormalizedWheelPosition := 0; 
+END_IF
+
 
 // Set up load case 
 IF bVeryLightLoad THEN 
@@ -97,7 +111,17 @@ END_VAR
       <LineId Id="99" Count="0" />
       <LineId Id="105" Count="0" />
       <LineId Id="101" Count="0" />
-      <LineId Id="33" Count="26" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="139" Count="6" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="149" Count="6" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="157" Count="0" />
+      <LineId Id="159" Count="1" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="42" Count="17" />
       <LineId Id="61" Count="3" />
       <LineId Id="9" Count="0" />
       <LineId Id="106" Count="0" />

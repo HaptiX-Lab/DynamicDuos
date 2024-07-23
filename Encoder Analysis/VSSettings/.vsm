@@ -5,7 +5,7 @@
   <Children>
     <Node>
       <Title>YT Scope Project</Title>
-      <Expanded>False</Expanded>
+      <Expanded>True</Expanded>
       <FileName>C:\Users\njanne\Documents\TcXaeShell\DynamicDuos\Encoder Analysis\YT Scope Project.tcscopex</FileName>
       <Children>
         <Node>
@@ -53,7 +53,7 @@
         </Node>
         <Node>
           <Title>YT Chart</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -86,12 +86,12 @@
         </Node>
         <Node>
           <Title>Virtual Spring Testing</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
               <Title>Degrees Axis (1)</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -104,7 +104,7 @@
             </Node>
             <Node>
               <Title>Volts Axis</Title>
-              <Expanded>False</Expanded>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
@@ -119,7 +119,7 @@
         </Node>
         <Node>
           <Title>Analysis of Phases</Title>
-          <Expanded>False</Expanded>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>

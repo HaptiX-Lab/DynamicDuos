@@ -55,22 +55,8 @@
     "color": {
       "color": "rgba(0, 128, 0, 1)"
     },
-    "start": 0,
-    "end": 35
-  },
-  {
-    "color": {
-      "color": "rgba(255, 165, 0, 1)"
-    },
-    "start": 35,
-    "end": 70
-  },
-  {
-    "color": {
-      "color": "rgba(255, 0, 0, 1)"
-    },
-    "start": 70,
-    "end": 100
+    "start": "%s%PLC1.MAIN.fbCalibrationBlock.rCurrentGripThreshold%/s%",
+    "end": "%f%%s%PLC1.MAIN.fbCalibrationBlock.rCurrentGripThreshold%/s%+5%/f%"
   }
 ]
 </script>
@@ -90,6 +76,27 @@
 
 </div>
 <div id="TcHmiButton_9" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="95" data-tchmi-height-unit="px" data-tchmi-left="343" data-tchmi-left-unit="px" data-tchmi-text="Go!" data-tchmi-top="125" data-tchmi-top-unit="px" data-tchmi-width="245" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="26" data-tchmi-zindex="3">
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_9.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.bTestIsLiveTrigger%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": true
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
 </div>
 <div id="TcHmiTextblock_31" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="45" data-tchmi-height-unit="px" data-tchmi-left="28" data-tchmi-left-unit="px" data-tchmi-text="Countdown" data-tchmi-top="70" data-tchmi-top-unit="px" data-tchmi-width="199" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="30" data-tchmi-text-horizontal-alignment="Center" data-tchmi-zindex="3">
 <script data-tchmi-target-attribute="data-tchmi-text-color" type="application/json">

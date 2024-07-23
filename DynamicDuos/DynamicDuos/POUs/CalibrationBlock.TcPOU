@@ -56,6 +56,7 @@ VAR
 	bUseConstantGripTriggerLIVE : BOOL;
 	aGripSchedule : ARRAY[1..nMaxTrialNumber] OF REAL;
 	aGripScheduleLIVE : ARRAY[1..nMaxTrialNumber] OF REAL;  
+	rCurrentGripThreshold : REAL := 0; 
 	
 	// 5. Pulse controls 
 	bUseConstantPulseTorque : BOOL; 
@@ -72,11 +73,15 @@ VAR
 	// At the begginning, we are in the configuration state. 
 	eSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
 	eNextSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
-	nCurrentTestIndex : INT := -1; 
+	nCurrentTestIndex : INT := 0; 
 	bTestIsLive : BOOL := FALSE; 
+	bTestIsLiveTrigger : BOOL := FALSE; 
 	
 	// Helper variables 
 	i : UINT; 
+	fbTonTest : TON := (PT := T#1000MS); // Timer for the entire test
+	fbTonPulse : TON := (PT := T#200MS); // Timer for the duration of the pulse 
+	bMotorLimitHit : BOOL := FALSE; 
 
 END_VAR
 ]]></Declaration>
@@ -91,6 +96,12 @@ rEncoder1Degrees := fbEncoder1.rDegrees;
 fbLoadCell(); 
 rGripForce := fbLoadCell.rCalibratedOutput; 
 ///////////// End sensor reading 
+
+
+// Update Timers 
+// First we compute the timer update 
+fbTonTest(IN := bTestIsLive); 
+fbTonPulse(IN := bTestIsLive); 
 
 // Now we go through the calibration logic. 
 CASE eSequenceState OF
@@ -116,12 +127,17 @@ CASE eSequenceState OF
 		IF bLaunchTestSequence THEN
 			eNextSequenceState := CalibStateType.TEST_SETUP; 
 			// Also set the first test index 
-			nCurrentTestIndex := 0; 
+			nCurrentTestIndex := 1; 
 			// And put this signal back down 
 			bLaunchTestSequence := FALSE; 
 		ELSE
 			eNextSequenceState := CalibStateType.PRE_LAUNCH; 
 		END_IF
+		
+		// We also need to make sure any motor commands are no longer hanging over 
+		bTestIsLive := FALSE; 
+		rCommand := 0; 
+		fbMotorReference(rCommandVoltage := rCommand); 
 		
 	// We are getting the test ready. 
 	CalibStateType.TEST_SETUP: 
@@ -130,13 +146,70 @@ CASE eSequenceState OF
 		// for the triggering signal. This signal is either going to be a timer, a manual button, or a grip threshold. 
 		// We need to additionally resolve this for the test to commence. 
 		
+		// Reset motor limit flag if its been hit 
+		bMotorLimitHit := FALSE; 
+		
 		// We can start by returning the motor to the homing position, which we can do with a simple PID
 		rCommand := -1 * 3 * ((3/2) * (fbEncoder1.rDegrees / 90) - (1/2) * (fbEncoder1.rLastDegrees / 90));
 		fbMotorReference(rCommandVoltage := rCommand); 
 		
 		// Then we check to see if the test going live conditions are met: 
+		// We need to figure out the type of trigger that's being used, and then we test for that. 
+		// In the first scenario, it's if there is a manual pulse sent from the button
+		IF bTestIsLiveTrigger AND bManualPulseLIVE AND NOT bManualPulseTimerEnableLIVE THEN // Manually push button 
+			bTestIsLive := TRUE; 
+			bTestIsLiveTrigger := FALSE; 
+		END_IF 
+		
+		// Then we need to check if it's a grip trigger pulse. To do this, we first update what the grip trigger
+		// should be, and then we check to see if the current grip matches that value 
+		IF NOT bManualPulseLIVE THEN
+			IF bUseConstantGripTrigger THEN
+				rCurrentGripThreshold := aGripScheduleLIVE[1]; 
+			ELSE
+				rCurrentGripThreshold := aGripScheduleLIVE[nCurrentTestIndex]; 
+			END_IF
+			
+			// Once we've set the value, we can compare to see if we've reached it 
+			IF rGripForce > rCurrentGripThreshold THEN
+				bTestIsLive := TRUE; 
+			END_IF
+			
+		END_IF
+		
 		IF bTestIsLive THEN
 			eNextSequenceState := CalibStateType.TEST_ACTIVE; 
+		END_IF
+		
+		
+	// Then we handle logic for actually completing the test. 
+	CalibStateType.TEST_ACTIVE: 
+	
+		// Timer is set based on bTestIsLive variable. Timers are updated at the beginning of every cycle. 	
+		IF NOT fbTonPulse.Q THEN // If the pulse hasn't expired, send the pulse 
+			rCommand := MotorTorqueToCommandV(rCommandTorque := rConstantTorqueSettingLIVE); 
+		ELSE
+			rCommand := 0;
+		END_IF
+		
+		// Check to see if motor has hit limit
+		IF rEncoder1Degrees > 120 OR bMotorLimitHit THEN // hardcoded threshold, reset back to normal
+			bMotorLimitHit := TRUE; 
+			rCommand := -1 * 1.5 * ((3/2) * (fbEncoder1.rDegrees / 120) - (1/2) * (fbEncoder1.rLastDegrees / 120));
+		END_IF
+		
+		fbMotorReference(rCommandVoltage := rCommand); 
+	
+		IF fbTonTest.Q THEN
+			IF nCurrentTestIndex < UINT_TO_INT(nTrialNumberLIVE) THEN // We have more tests to run 
+				bTestIsLive := FALSE;
+				nCurrentTestIndex := nCurrentTestIndex + 1; 
+				eNextSequenceState := CalibStateType.TEST_SETUP;
+			ELSE	
+				eNextSequenceState := CalibStateType.TEST_FINISHED; 
+				bTestIsLive := FALSE; 
+			END_IF
+				
 		END_IF
 
 END_CASE
@@ -163,6 +236,10 @@ END_VAR
       <LineId Id="32" Count="6" />
       <LineId Id="28" Count="0" />
       <LineId Id="148" Count="0" />
+      <LineId Id="295" Count="1" />
+      <LineId Id="294" Count="0" />
+      <LineId Id="298" Count="1" />
+      <LineId Id="297" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="154" Count="0" />
       <LineId Id="156" Count="1" />
@@ -178,12 +255,57 @@ END_VAR
       <LineId Id="214" Count="1" />
       <LineId Id="223" Count="1" />
       <LineId Id="197" Count="2" />
+      <LineId Id="267" Count="1" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="269" Count="1" />
       <LineId Id="201" Count="2" />
       <LineId Id="221" Count="0" />
-      <LineId Id="205" Count="4" />
+      <LineId Id="205" Count="2" />
+      <LineId Id="401" Count="2" />
+      <LineId Id="208" Count="1" />
       <LineId Id="211" Count="0" />
       <LineId Id="225" Count="0" />
-      <LineId Id="216" Count="4" />
+      <LineId Id="216" Count="1" />
+      <LineId Id="227" Count="0" />
+      <LineId Id="230" Count="0" />
+      <LineId Id="232" Count="1" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="241" Count="0" />
+      <LineId Id="246" Count="0" />
+      <LineId Id="249" Count="1" />
+      <LineId Id="252" Count="0" />
+      <LineId Id="254" Count="1" />
+      <LineId Id="253" Count="0" />
+      <LineId Id="256" Count="1" />
+      <LineId Id="259" Count="2" />
+      <LineId Id="258" Count="0" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="229" Count="0" />
+      <LineId Id="218" Count="2" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="264" Count="1" />
+      <LineId Id="263" Count="0" />
+      <LineId Id="274" Count="0" />
+      <LineId Id="279" Count="1" />
+      <LineId Id="383" Count="0" />
+      <LineId Id="282" Count="0" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="283" Count="0" />
+      <LineId Id="395" Count="2" />
+      <LineId Id="400" Count="0" />
+      <LineId Id="398" Count="1" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="385" Count="0" />
+      <LineId Id="387" Count="3" />
+      <LineId Id="386" Count="0" />
+      <LineId Id="292" Count="0" />
+      <LineId Id="391" Count="1" />
+      <LineId Id="291" Count="0" />
       <LineId Id="159" Count="0" />
       <LineId Id="158" Count="0" />
       <LineId Id="185" Count="0" />

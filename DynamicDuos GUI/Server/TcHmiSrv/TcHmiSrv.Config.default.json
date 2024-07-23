@@ -2896,6 +2896,23 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbCalibrationBlock.bTestIsLiveTrigger": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::bTestIsLiveTrigger",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "propertyOrder": 33
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbCalibrationBlock.bTestTypeHuman": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -3033,6 +3050,23 @@
                     },
                     {
                         "propertyOrder": 21
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.rCurrentGripThreshold": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::rCurrentGripThreshold",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/REAL"
+                    },
+                    {
+                        "propertyOrder": 23
                     }
                 ]
             },
@@ -7892,6 +7926,7 @@
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulse": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerEnable": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bManualPulseTimerValue": 3,
+                "PLC1.MAIN.fbCalibrationBlock.bTestIsLiveTrigger": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bTestTypeHuman": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTriger": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTrigger": 3,
@@ -7900,6 +7935,7 @@
                 "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.rConstantTorqueSetting": 3,
+                "PLC1.MAIN.fbCalibrationBlock.rCurrentGripThreshold": 3,
                 "PLC1.MAIN.fbCalibrationBlock.rManualPulseTimerValue": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bLightLoad": 3,
