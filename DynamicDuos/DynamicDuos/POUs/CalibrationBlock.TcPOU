@@ -214,6 +214,9 @@ CASE eSequenceState OF
 
 END_CASE
 
+// Update everything that just happened and log the event. 
+
+
 // Update state for next iteration
 eSequenceState := eNextSequenceState; 
 
@@ -308,6 +311,7 @@ END_VAR
       <LineId Id="291" Count="0" />
       <LineId Id="159" Count="0" />
       <LineId Id="158" Count="0" />
+      <LineId Id="404" Count="2" />
       <LineId Id="185" Count="0" />
       <LineId Id="184" Count="0" />
       <LineId Id="186" Count="0" />

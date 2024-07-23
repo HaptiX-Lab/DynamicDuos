@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CalibTrialStep" Id="{2fa55f2c-afad-47c5-a328-39fb0ea8f43d}">
+    <Declaration><![CDATA[TYPE ST_CalibTrialStep : // Defines the configuration and data for a calibration trial at a given point in time. 
+STRUCT
+	rEncoderDegrees : REAL; 
+	rCommandVoltage : REAL; 
+	rCommandTorque : REAL; 
+	rGripForce : REAL; 
+	rCurrentGripThreshold : REAL; 
+	rConstantTorqueSetting : REAL; 
+	eSquenceState : CalibStateType; 
+	eNextSequenceState : CalibStateType; 
+	nCurrentTestIndex : INT;
+	bTestIsLive : BOOL; 
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
