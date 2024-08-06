@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <DUT Name="CalibStateType" Id="{d8c2773c-e73d-4d5a-9f38-136029e63922}">
+  <DUT Name="MainStateType" Id="{802e937e-8b20-4cdb-b63e-58102d60ffc4}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
 {attribute 'to_string'}
-TYPE CalibStateType :
+TYPE MainStateType :
 (
 	PRE_LAUNCH := 0, // When the user is inputting settings. 
 	TEST_SETUP := 1, // When the automation is getting the test ready
 	TEST_ACTIVE := 2, // When the test is actively running. 
 	TEST_FINISHED := 3, // When all calibration rounds have been completed. 
 	PROCESSING_LOG := 4, // When the log is saving.
+	WAITING_FOR_RELEASE := 5, 
 	ABORT := -1 // When the user has interrupted a test. 
 );
 END_TYPE

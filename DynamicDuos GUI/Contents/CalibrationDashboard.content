@@ -50,6 +50,20 @@
           "value": true
         },
         "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "startRecord",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "startDisplay",
+        "asyncWait": true
       }
     ]
   },
@@ -169,6 +183,20 @@
           "valueType": "tchmi:general#/definitions/Boolean",
           "value": true
         },
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "stopRecord",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "stopDisplay",
         "asyncWait": true
       }
     ]
@@ -479,7 +507,7 @@
               {
                 "compare1": {
                   "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/String",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
                   "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%"
                 },
                 "compare2": {
@@ -523,7 +551,7 @@
               {
                 "compare1": {
                   "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/String",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
                   "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%"
                 },
                 "compare2": {
@@ -567,7 +595,7 @@
               {
                 "compare1": {
                   "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/String",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
                   "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%"
                 },
                 "compare2": {
@@ -588,6 +616,94 @@
                   "objectType": "StaticValue",
                   "valueType": "tchmi:general#/definitions/String",
                   "value": "Waiting for test to be launched"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextbox_4::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Color",
+                  "value": {
+                    "color": "rgba(255, 255, 255, 1)"
+                  }
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
+                  "value": 3
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextbox_4::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "Test finished, starting log write"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextbox_4::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Color",
+                  "value": {
+                    "color": "rgba(255, 255, 255, 1)"
+                  }
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
+                  "value": 4
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextbox_4::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "Processing log, please wait..."
                 },
                 "asyncWait": true
               },
@@ -700,6 +816,98 @@
             ]
           }
         ],
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiTextblock_34" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="49" data-tchmi-height-unit="px" data-tchmi-left="1034" data-tchmi-left-unit="px" data-tchmi-text="%" data-tchmi-top="90" data-tchmi-top-unit="px" data-tchmi-width="170" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-font-size="20">
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%",
+    "actions": [
+      {
+        "objectType": "Condition",
+        "active": true,
+        "parts": [
+          {
+            "if": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
+                  "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.CalibStateType",
+                  "value": 4
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_34::Visibility%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Visibility",
+                  "value": "Visible"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_34::Text%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.fbLogger.sWritePercentString%/s%"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "else": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_34::Visibility%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Visibility",
+                  "value": "Hidden"
+                },
+                "asyncWait": true
+              }
+            ]
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  },
+  {
+    "event": "%s%PLC1.MAIN.fbCalibrationBlock.fbLogger.sWritePercentString%/s%",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiTextblock_34::Text%/ctrl%",
+        "value": {
+          "objectType": "Symbol",
+          "valueType": "tchmi:general#/definitions/String",
+          "symbolExpression": "%s%PLC1.MAIN.fbCalibrationBlock.fbLogger.sWritePercentString%/s%"
+        },
         "asyncWait": true
       }
     ]

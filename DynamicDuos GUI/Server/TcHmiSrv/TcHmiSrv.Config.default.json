@@ -28,6 +28,22 @@
     "DEFAULTTIMEZONE": "client",
     "DEFAULTUSERGROUP": "__SystemUsers",
     "DEFINITIONS": {
+        "PLC1.ARRAY_0..10_OF-ST_LoadExperimentSetting": {
+            "items": {
+                "$ref": "#/definitions/PLC1.ST_LoadExperimentSetting"
+            },
+            "maxItems": 11,
+            "minItems": 11,
+            "type": "array"
+        },
+        "PLC1.ARRAY_0..9_OF-ST_LoadExperimentSetting": {
+            "items": {
+                "$ref": "#/definitions/PLC1.ST_LoadExperimentSetting"
+            },
+            "maxItems": 10,
+            "minItems": 10,
+            "type": "array"
+        },
         "PLC1.ActiveWindowStateType": {
             "attributes": {
                 "generate_implicit_init_function": "",
@@ -59,13 +75,17 @@
             "attributes": {
                 "generate_implicit_init_function": "",
                 "qualified_only": "",
-                "strict": ""
+                "strict": "",
+                "to_string": "",
+                "to_string_function": "__TO_STRING__138",
+                "to_wstring_function": "__TO_WSTRING__138"
             },
             "enum": [
                 0,
                 1,
                 2,
                 3,
+                4,
                 -1
             ],
             "options": [
@@ -84,6 +104,10 @@
                 {
                     "label": "TEST_FINISHED",
                     "value": 3
+                },
+                {
+                    "label": "PROCESSING_LOG",
+                    "value": 4
                 },
                 {
                     "label": "ABORT",
@@ -129,6 +153,56 @@
             ],
             "type": "integer"
         },
+        "PLC1.MainStateType": {
+            "attributes": {
+                "generate_implicit_init_function": "",
+                "qualified_only": "",
+                "strict": "",
+                "to_string": "",
+                "to_string_function": "__TO_STRING__141",
+                "to_wstring_function": "__TO_WSTRING__141"
+            },
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                -1
+            ],
+            "options": [
+                {
+                    "label": "PRE_LAUNCH",
+                    "value": 0
+                },
+                {
+                    "label": "TEST_SETUP",
+                    "value": 1
+                },
+                {
+                    "label": "TEST_ACTIVE",
+                    "value": 2
+                },
+                {
+                    "label": "TEST_FINISHED",
+                    "value": 3
+                },
+                {
+                    "label": "PROCESSING_LOG",
+                    "value": 4
+                },
+                {
+                    "label": "WAITING_FOR_RELEASE",
+                    "value": 5
+                },
+                {
+                    "label": "ABORT",
+                    "value": -1
+                }
+            ],
+            "type": "integer"
+        },
         "PLC1.MasterStateType": {
             "attributes": {
                 "generate_implicit_init_function": "",
@@ -163,6 +237,31 @@
                 }
             ],
             "type": "integer"
+        },
+        "PLC1.ST_LoadExperimentSetting": {
+            "properties": {
+                "Test_Finished": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "Weight": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                }
+            },
+            "type": "object"
         }
     },
     "DEFLATECOMPRESSIONLEVEL": 5,
@@ -2997,7 +3096,25 @@
                     },
                     {
                         "comment": "//// END GUI TEST OPTIONS",
-                        "propertyOrder": 28
+                        "propertyOrder": 36
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbCalibrationBlock.fbLogger.sWritePercentString": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbCalibrationBlock::fbLogger::sWritePercentString",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "maxLength": 255,
+                        "propertyOrder": 19
+                    },
+                    {
+                        "$ref": "tchmi:general#/definitions/String"
                     }
                 ]
             },
@@ -3089,6 +3206,42 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.fbMainExperimentBlock.aTestSettings": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::aTestSettings",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ARRAY_0..9_OF-ST_LoadExperimentSetting"
+                    },
+                    {
+                        "comment": "Load settings for multiple trials",
+                        "propertyOrder": 15
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbMainExperimentBlock.bDemoMode": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::bDemoMode",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "Settings to manage experiment behavior.",
+                        "propertyOrder": 14
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -3101,6 +3254,59 @@
                     },
                     {
                         "propertyOrder": 5
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbMainExperimentBlock.bInitHLCatch": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::bInitHLCatch",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "Implement Heavy-Light Catch",
+                        "propertyOrder": 36
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbMainExperimentBlock.bInitLHCatch": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::bInitLHCatch",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "Implement Light-Heavy Catch",
+                        "propertyOrder": 37
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbMainExperimentBlock.bLaunchTestSequence": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::bLaunchTestSequence",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "propertyOrder": 19
                     }
                 ]
             },
@@ -3169,6 +3375,41 @@
                     },
                     {
                         "propertyOrder": 1
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbMainExperimentBlock.eSequenceState": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::eSequenceState",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.MainStateType"
+                    },
+                    {
+                        "comment": "Settings to manage experiment behavior.",
+                        "propertyOrder": 15
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.fbMainExperimentBlock.nDemoLoadSetting": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::fbMainExperimentBlock::nDemoLoadSetting",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/INT"
+                    },
+                    {
+                        "propertyOrder": 15
                     }
                 ]
             },
@@ -7932,16 +8173,24 @@
                 "PLC1.MAIN.fbCalibrationBlock.bUseConstantGripTrigger": 3,
                 "PLC1.MAIN.fbCalibrationBlock.bUseConstantPulseTorque": 3,
                 "PLC1.MAIN.fbCalibrationBlock.eSequenceState": 3,
+                "PLC1.MAIN.fbCalibrationBlock.fbLogger.sWritePercentString": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nMaxTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.nTrialNumber": 3,
                 "PLC1.MAIN.fbCalibrationBlock.rConstantTorqueSetting": 3,
                 "PLC1.MAIN.fbCalibrationBlock.rCurrentGripThreshold": 3,
                 "PLC1.MAIN.fbCalibrationBlock.rManualPulseTimerValue": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.aTestSettings": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.bDemoMode": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.bInitHLCatch": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.bInitLHCatch": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.bLaunchTestSequence": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bLightLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bMediumLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bModeratelyHeavyLoad": 3,
                 "PLC1.MAIN.fbMainExperimentBlock.bVeryLightLoad": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.eSequenceState": 3,
+                "PLC1.MAIN.fbMainExperimentBlock.nDemoLoadSetting": 3,
                 "PLC1.MAIN.rCommand": 3,
                 "PLC1.MAIN.rEncoder1Degrees": 3,
                 "PLC1.MainExperimentLoop.bHeavyLoad": 3,

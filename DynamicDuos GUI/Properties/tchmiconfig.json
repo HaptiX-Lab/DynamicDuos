@@ -132,7 +132,14 @@
   ],
   "userFunctions": [],
   "symbols": {
-    "internal": {},
+    "internal": {
+      "HideLoadSchedule": {
+        "value": false,
+        "type": "tchmi:general#/definitions/BOOL",
+        "persist": false,
+        "readonly": false
+      }
+    },
     "themedResources": {}
   },
   "trigger": [],

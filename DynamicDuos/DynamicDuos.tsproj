@@ -90,7 +90,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{62CB6A31-8674-C7F7-440D-EA175F03DEB6}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{DF6021EA-7D25-E53B-93CD-825CA6E23DB2}">
 					<Name>DynamicDuos Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -102,25 +102,6 @@
 						<Var>
 							<Name>GVL.ENCODER_1_B_STATUS</Name>
 							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMainExperimentBlock.fbEncoder1.QE_CHANNEL_COUNTS</Name>
-							<Comment><![CDATA[ This is a single channel of a two-channel quadrature encoder 
- (if using the EL5122). This QE_CHANNEL object maps all the data
- we want directly (counts) FROM the device manager 
- found in the IO tab TO this quadrature encoder block right here. 
- The quadrature encoder block abstracts any complexity needed 
- to read/set values in the QE_CHANNEL object so that the device 
- works as seemlessly as possible. ]]></Comment>
-							<Type>UDINT</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMainExperimentBlock.fbLoadCell.nAnalogReading</Name>
-							<Type>INT</Type>
-						</Var>
-						<Var>
-							<Name>GVL.ENCODER_1_RAW_COUNTS</Name>
-							<Type>UDINT</Type>
 						</Var>
 						<Var>
 							<Name>MAIN.fbCalibrationBlock.fbEncoder1.QE_CHANNEL_COUNTS</Name>
@@ -137,15 +118,34 @@
 							<Name>MAIN.fbCalibrationBlock.fbLoadCell.nAnalogReading</Name>
 							<Type>INT</Type>
 						</Var>
+						<Var>
+							<Name>GVL.ENCODER_1_RAW_COUNTS</Name>
+							<Type>UDINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbMainExperimentBlock.fbEncoder1.QE_CHANNEL_COUNTS</Name>
+							<Comment><![CDATA[ This is a single channel of a two-channel quadrature encoder 
+ (if using the EL5122). This QE_CHANNEL object maps all the data
+ we want directly (counts) FROM the device manager 
+ found in the IO tab TO this quadrature encoder block right here. 
+ The quadrature encoder block abstracts any complexity needed 
+ to read/set values in the QE_CHANNEL object so that the device 
+ works as seemlessly as possible. ]]></Comment>
+							<Type>UDINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbMainExperimentBlock.fbLoadCell.nAnalogReading</Name>
+							<Type>INT</Type>
+						</Var>
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
 						<Name>PlcTask Outputs</Name>
 						<Var>
-							<Name>MAIN.fbMotor1.nPosAnalogOutput</Name>
+							<Name>MAIN.fbMotor1.nNegAnalogOutput</Name>
 							<Type>INT</Type>
 						</Var>
 						<Var>
-							<Name>MAIN.fbMotor1.nNegAnalogOutput</Name>
+							<Name>MAIN.fbMotor1.nPosAnalogOutput</Name>
 							<Type>INT</Type>
 						</Var>
 						<Var>

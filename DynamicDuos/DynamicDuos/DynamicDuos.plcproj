@@ -25,10 +25,16 @@
     <Compile Include="DUTs\CalibStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\MainStateType.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\MasterStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\ST_CalibTrialStep.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\ST_LoadExperimentSetting.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GVLs\GVL.TcGVL">
@@ -41,7 +47,7 @@
     <Compile Include="POUs\CalibrationBlock.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\FB_FileWriter.TcPOU">
+    <Compile Include="POUs\CalibrationBlockLogger.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">

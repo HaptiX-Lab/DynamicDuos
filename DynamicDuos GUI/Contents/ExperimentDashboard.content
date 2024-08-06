@@ -1,4 +1,4 @@
-<div id="ExperimentDashboard" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="1227" data-tchmi-height="860">
+<div id="ExperimentDashboard" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="1227" data-tchmi-height="860" data-tchmi-zindex="2">
 
 
 <script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
@@ -6,24 +6,7 @@
   "color": "rgba(231, 231, 231, 1)"
 }
 </script>
-<div id="TcHmiTextblock_10" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="51" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Select Load Case" data-tchmi-top="41" data-tchmi-top-unit="px" data-tchmi-width="285" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="30">
-</div>
-<div id="TcHmiRadioButton_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Very Light" data-tchmi-top="139" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Active" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.bVeryLightLoad%/s%">
-
-</div>
-<div id="TcHmiRadioButton_6" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Light" data-tchmi-top="211" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.bLightLoad%/s%">
-
-</div>
-<div id="TcHmiRadioButton_7" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Medium" data-tchmi-top="288" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.bMediumLoad%/s%">
-
-</div>
-<div id="TcHmiRadioButton_8" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Moderately Heavy" data-tchmi-top="361" data-tchmi-top-unit="px" data-tchmi-width="239" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.bModeratelyHeavyLoad%/s%">
-
-</div>
-<div id="TcHmiRadioButton_9" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadioButton" data-tchmi-height="44" data-tchmi-height-unit="px" data-tchmi-left="44" data-tchmi-left-unit="px" data-tchmi-text="Heavy" data-tchmi-top="430" data-tchmi-top-unit="px" data-tchmi-width="171" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-radio-state="Normal" data-tchmi-radio-group="LoadSelectorGroup" data-tchmi-state-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.bHeavyLoad%/s%">
-
-</div>
-<div id="TcHmiButton" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="65" data-tchmi-height-unit="px" data-tchmi-left="1010" data-tchmi-left-unit="px" data-tchmi-text="ENGAGE" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="194" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="24" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center">
+<div id="TcHmiButton" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="65" data-tchmi-height-unit="px" data-tchmi-left="1010" data-tchmi-left-unit="px" data-tchmi-text="ENGAGE" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="194" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="24" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="2">
 
 
 
@@ -69,6 +52,34 @@
           "valueType": "tchmi:general#/definitions/Boolean",
           "value": true
         },
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "startRecord",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "startDisplay",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl_1",
+        "fn": "startRecord",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl_1",
+        "fn": "startDisplay",
         "asyncWait": true
       }
     ]
@@ -140,7 +151,7 @@
 }
 </script>
 </div>
-<div id="TcHmiButton_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="65" data-tchmi-height-unit="px" data-tchmi-left="788" data-tchmi-left-unit="px" data-tchmi-text="DISENGAGE" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="194" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="24" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-horizontal-alignment="Center" data-tchmi-is-enabled="true">
+<div id="TcHmiButton_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="65" data-tchmi-height-unit="px" data-tchmi-left="788" data-tchmi-left-unit="px" data-tchmi-text="DISENGAGE" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="194" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="24" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-horizontal-alignment="Center" data-tchmi-is-enabled="true" data-tchmi-zindex="2">
 
 <script data-tchmi-target-attribute="data-tchmi-text-color" type="application/json">
 {
@@ -190,6 +201,34 @@
           "valueType": "tchmi:general#/definitions/Boolean",
           "value": true
         },
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "stopRecord",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl",
+        "fn": "stopDisplay",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl_1",
+        "fn": "stopRecord",
+        "asyncWait": true
+      },
+      {
+        "objectType": "ControlApiFunction",
+        "active": true,
+        "control": "TcHmiScopeControl_1",
+        "fn": "stopDisplay",
         "asyncWait": true
       }
     ]
@@ -242,6 +281,742 @@
                   "objectType": "StaticValue",
                   "valueType": "tchmi:general#/definitions/Boolean",
                   "value": false
+                },
+                "asyncWait": true
+              }
+            ]
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiDatagrid" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height="567" data-tchmi-height-unit="px" data-tchmi-left="42" data-tchmi-left-unit="px" data-tchmi-top="172" data-tchmi-top-unit="px" data-tchmi-width="316" data-tchmi-width-unit="px" data-tchmi-row-height="50" data-tchmi-header-height="50" data-tchmi-header-font-size="24" data-tchmi-row-numbers-width="40" data-tchmi-grid-font-size="18" data-tchmi-data-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.aTestSettings%/s%" data-tchmi-zindex="0" data-tchmi-opacity="1" data-tchmi-visibility="Visible">
+<script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
+[
+  {
+    "name": "Weight",
+    "label": "Weight",
+    "control": "ComboBox",
+    "width": 175,
+    "widthUnit": "px",
+    "resize": true,
+    "sortable": false,
+    "minWidth": 70,
+    "minWidthUnit": "px",
+    "editable": true,
+    "horizontalAlignment": "Center",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false,
+    "dataDefinitions": [
+      {
+        "value": 1,
+        "text": "Very Light"
+      },
+      {
+        "value": 2,
+        "text": "Light"
+      },
+      {
+        "value": 3,
+        "text": "Medium"
+      },
+      {
+        "value": 4,
+        "text": "Moderately Heavy"
+      },
+      {
+        "value": 5,
+        "text": "Heavy"
+      }
+    ]
+  },
+  {
+    "name": "Trial_Complete",
+    "label": "Complete",
+    "control": "CheckBox",
+    "width": 100,
+    "widthUnit": "px",
+    "resize": true,
+    "sortable": false,
+    "minWidth": 70,
+    "minWidthUnit": "px",
+    "editable": false,
+    "horizontalAlignment": "Center",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false
+  }
+]
+</script>
+<script data-tchmi-target-attribute="data-tchmi-src-data" type="application/json">
+[
+  {
+    "Weight": 1,
+    "Trial_Complete": true
+  },
+  {
+    "Weight": 3,
+    "Trial_Complete": false
+  },
+  {
+    "Weight": 4,
+    "Trial_Complete": false
+  }
+]
+</script>
+<script data-tchmi-target-attribute="data-tchmi-cell-content-padding" type="application/json">
+{
+  "left": 3,
+  "leftUnit": "px",
+  "right": 3,
+  "rightUnit": "px",
+  "top": 0,
+  "topUnit": "px",
+  "bottom": 0,
+  "bottomUnit": "px"
+}
+</script>
+
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 2,
+  "top": 2,
+  "bottom": 2,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+</div>
+<div id="TcHmiToggleSwitch" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleSwitch" data-tchmi-height="34" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-text="Demo Mode" data-tchmi-top="16" data-tchmi-top-unit="px" data-tchmi-width="264" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-zindex="2" data-tchmi-state-symbol="%s%PLC1.MAIN.fbMainExperimentBlock.bDemoMode%/s%">
+</div>
+<div id="TcHmiTextblock_35" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="34" data-tchmi-height-unit="px" data-tchmi-left="42" data-tchmi-left-unit="px" data-tchmi-text="Test Overview" data-tchmi-top="128" data-tchmi-top-unit="px" data-tchmi-width="316" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="26" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="1">
+</div>
+<div id="TcHmiButton_10" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="49" data-tchmi-height-unit="px" data-tchmi-left="42" data-tchmi-left-unit="px" data-tchmi-text="Launch Test" data-tchmi-top="755" data-tchmi-top-unit="px" data-tchmi-width="316" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-font-size="20" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_10.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.bLaunchTestSequence%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": true
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiScopeControl_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiScopeControl.TcHmiScopeControl" data-tchmi-height="651" data-tchmi-height-unit="px" data-tchmi-left="403" data-tchmi-left-unit="px" data-tchmi-top="153" data-tchmi-top-unit="px" data-tchmi-width="787" data-tchmi-width-unit="px" data-tchmi-server-interval="1" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-scope-config" type="application/json">
+{
+  "name": "MainExperimentScope",
+  "chart": "MainExperimentScope"
+}
+</script>
+</div>
+<div id="TcHmiTextblock_36" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="403" data-tchmi-left-unit="px" data-tchmi-text="Waiting for test to start" data-tchmi-top="93" data-tchmi-top-unit="px" data-tchmi-width="787" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="24" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 2,
+  "top": 2,
+  "bottom": 2,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-style" type="application/json">
+{
+  "left": "Solid",
+  "right": "Solid",
+  "top": "Solid",
+  "bottom": "Solid"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(255, 255, 255, 1)"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%",
+    "actions": [
+      {
+        "objectType": "Condition",
+        "active": true,
+        "parts": [
+          {
+            "if": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "value": 0
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_36::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "Waiting for test to start"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "value": 1
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_36::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "TEST_SETUP"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "value": 2
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_36::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "TEST_ACTIVE"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "value": 3
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_36::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "TEST_FINISHED"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "value": 4
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_36::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "PROCESSING_LOG"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "elseif": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.eSequenceState%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:server#/definitions/PLC1.MainStateType",
+                  "value": 5
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiTextblock_36::Text%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "RELEASE"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "else": []
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiCombobox" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiCombobox" data-tchmi-auto-focus-out="true" data-tchmi-combobox-text="Select Weight" data-tchmi-height="41" data-tchmi-height-unit="px" data-tchmi-left="16" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width="164" data-tchmi-width-unit="px" data-tchmi-visibility="Hidden" data-tchmi-zindex="1">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+
+<script data-tchmi-target-attribute="data-tchmi-src-data" type="application/json">
+[
+  {
+    "id": 1.0,
+    "text": "Very Light",
+    "value": 1.0
+  },
+  {
+    "id": 2.0,
+    "text": "Light",
+    "value": 2.0
+  },
+  {
+    "id": 3.0,
+    "text": "Medium",
+    "value": 3.0
+  },
+  {
+    "id": 4.0,
+    "text": "Moderately Heavy",
+    "value": 4.0
+  },
+  {
+    "id": 5.0,
+    "text": "Heavy",
+    "value": 5.0
+  }
+]
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "%ctrl%TcHmiToggleSwitch::ToggleState%/ctrl%",
+    "actions": [
+      {
+        "objectType": "Condition",
+        "active": true,
+        "parts": [
+          {
+            "if": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%ctrl%TcHmiToggleSwitch::ToggleState%/ctrl%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/ToggleState",
+                  "value": "Active"
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiCombobox::Visibility%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Visibility",
+                  "value": "Visible"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "else": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiCombobox::Visibility%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Visibility",
+                  "value": "Hidden"
+                },
+                "asyncWait": true
+              }
+            ]
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  },
+  {
+    "event": "TcHmiCombobox.onSelectionChanged",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.nDemoLoadSetting%/s%",
+        "value": {
+          "objectType": "FunctionExpression",
+          "functionExpression": "%ctrl%TcHmiCombobox::SelectedId%/ctrl%"
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiButton_11" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="36" data-tchmi-height-unit="px" data-tchmi-left="403" data-tchmi-left-unit="px" data-tchmi-text="Random  Heavy-Light Catch" data-tchmi-top="814" data-tchmi-top-unit="px" data-tchmi-width="196" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(246, 246, 246, 1)"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 2,
+  "top": 2,
+  "bottom": 2,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-style" type="application/json">
+{
+  "left": "Solid",
+  "right": "Solid",
+  "top": "Solid",
+  "bottom": "Solid"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_11.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.bInitHLCatch%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": true
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiButton_12" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="36" data-tchmi-height-unit="px" data-tchmi-left="599" data-tchmi-left-unit="px" data-tchmi-text="Random Light-Heavy Catch" data-tchmi-top="814" data-tchmi-top-unit="px" data-tchmi-width="196" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(246, 246, 246, 1)"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 2,
+  "top": 2,
+  "bottom": 2,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-style" type="application/json">
+{
+  "left": "Solid",
+  "right": "Solid",
+  "top": "Solid",
+  "bottom": "Solid"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_12.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.fbMainExperimentBlock.bInitLHCatch%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": true
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiButton_13" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="36" data-tchmi-height-unit="px" data-tchmi-left="795" data-tchmi-left-unit="px" data-tchmi-text="Random Extrapolate" data-tchmi-top="814" data-tchmi-top-unit="px" data-tchmi-width="196" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(246, 246, 246, 1)"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 2,
+  "top": 2,
+  "bottom": 2,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-style" type="application/json">
+{
+  "left": "Solid",
+  "right": "Solid",
+  "top": "Solid",
+  "bottom": "Solid"
+}
+</script>
+</div>
+<div id="TcHmiButton_14" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="36" data-tchmi-height-unit="px" data-tchmi-left="991" data-tchmi-left-unit="px" data-tchmi-text="Random Interpolate" data-tchmi-top="814" data-tchmi-top-unit="px" data-tchmi-width="196" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-zindex="1">
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(246, 246, 246, 1)"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 2,
+  "top": 2,
+  "bottom": 2,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-style" type="application/json">
+{
+  "left": "Solid",
+  "right": "Solid",
+  "top": "Solid",
+  "bottom": "Solid"
+}
+</script>
+</div>
+<div id="TcHmiToggleSwitch_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleSwitch" data-tchmi-height="34" data-tchmi-height-unit="px" data-tchmi-left="284" data-tchmi-left-unit="px" data-tchmi-text="Hide Loads" data-tchmi-top="16" data-tchmi-top-unit="px" data-tchmi-width="264" data-tchmi-width-unit="px" data-tchmi-text-font-size="24" data-tchmi-zindex="2"  data-tchmi-state-symbol="%i%HideLoadSchedule%/i%">
+</div>
+<div id="TcHmiRectangle_10" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRectangle" data-tchmi-height="499" data-tchmi-height-unit="px" data-tchmi-left="80" data-tchmi-left-unit="px" data-tchmi-top="220" data-tchmi-top-unit="px" data-tchmi-width="174" data-tchmi-width-unit="px" data-tchmi-zindex="1" data-tchmi-visibility="Hidden">
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-fill-color" type="application/json">
+{
+  "color": "rgba(255, 114, 114, 1)"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "%i%HideLoadSchedule%/i%",
+    "actions": [
+      {
+        "objectType": "Condition",
+        "active": true,
+        "parts": [
+          {
+            "if": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "symbolExpression": "%i%HideLoadSchedule%/i%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "value": true
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiRectangle_10::Visibility%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Visibility",
+                  "value": "Visible"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "else": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiRectangle_10::Visibility%/ctrl%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:framework#/definitions/Visibility",
+                  "value": "Collapsed"
                 },
                 "asyncWait": true
               }

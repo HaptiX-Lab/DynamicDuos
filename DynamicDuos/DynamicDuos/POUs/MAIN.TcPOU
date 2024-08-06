@@ -19,11 +19,15 @@ VAR
 	// Motor commands (and other outputs), need to be commanded 
 	// by a top level function if multiple objects are going to control it. 
 	fbMotor1 : FB_AnalogMotorDriver; 
+	fbSystemTime : GETSYSTEMTIME; 
 	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Update master state string to send to GUI 
+      <ST><![CDATA[// Update system time
+fbSystemTime(timeLoDW => GVL.MAIN_SYSTEM_TIME); 
+
+// Update master state string to send to GUI 
 MASTER_STATE_STR := TO_STRING(MASTER_STATE);
 
 // Based on the master state, load different behavior profile. 
@@ -40,14 +44,10 @@ END_IF
 
 CASE MASTER_STATE OF
 	MasterStateType.ACTIVE : 
-		fbMainExperimentBlock();
-		// Apply command voltage
-		fbMotor1(rCommandVoltage := fbMainExperimentBlock.rCommand); 
+		fbMainExperimentBlock(fbMotorReference := fbMotor1);
  
 	MasterStateType.CALIBRATION : 
 		fbCalibrationBlock(fbMotorReference := fbMotor1);
-		// Apply command voltage 
-		// fbMotor1(rCommandVoltage := fbCalibrationBlock.rCommand); 
 	
 END_CASE
 
@@ -57,6 +57,9 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
+      <LineId Id="309" Count="0" />
+      <LineId Id="312" Count="0" />
+      <LineId Id="310" Count="0" />
       <LineId Id="231" Count="0" />
       <LineId Id="196" Count="0" />
       <LineId Id="232" Count="0" />
@@ -75,10 +78,9 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
       <LineId Id="233" Count="0" />
       <LineId Id="235" Count="0" />
       <LineId Id="278" Count="0" />
-      <LineId Id="281" Count="0" />
-      <LineId Id="279" Count="1" />
+      <LineId Id="280" Count="0" />
       <LineId Id="237" Count="0" />
-      <LineId Id="284" Count="2" />
+      <LineId Id="284" Count="0" />
       <LineId Id="283" Count="0" />
       <LineId Id="236" Count="0" />
       <LineId Id="249" Count="0" />

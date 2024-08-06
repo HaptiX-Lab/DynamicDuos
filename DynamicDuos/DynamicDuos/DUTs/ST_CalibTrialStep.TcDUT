@@ -3,16 +3,19 @@
   <DUT Name="ST_CalibTrialStep" Id="{2fa55f2c-afad-47c5-a328-39fb0ea8f43d}">
     <Declaration><![CDATA[TYPE ST_CalibTrialStep : // Defines the configuration and data for a calibration trial at a given point in time. 
 STRUCT
+	nTimestepLow : UDINT;
+	nTimeStepHigh : UDINT; 
 	rEncoderDegrees : REAL; 
+	rEncoderRadians : REAL; 
 	rCommandVoltage : REAL; 
 	rCommandTorque : REAL; 
+	rAppliedTorque : REAL; 
+	rVirtualSpringTorque : REAL; 
 	rGripForce : REAL; 
 	rCurrentGripThreshold : REAL; 
-	rConstantTorqueSetting : REAL; 
-	eSquenceState : CalibStateType; 
-	eNextSequenceState : CalibStateType; 
+	sSequenceStateString : T_MaxString;  // String of the state
 	nCurrentTestIndex : INT;
-	bTestIsLive : BOOL; 
+	nTestIsLive : INT; 
 END_STRUCT
 END_TYPE
 ]]></Declaration>

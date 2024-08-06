@@ -178,6 +178,8 @@
   "chart": "Virtual Spring Testing"
 }
 </script>
+
+
 </div>
 <div id="TcHmiTextblock_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="1178" data-tchmi-left-unit="px" data-tchmi-text="Active Window" data-tchmi-top="108" data-tchmi-top-unit="px" data-tchmi-width="252" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="30" data-tchmi-zindex="2">
 </div>
