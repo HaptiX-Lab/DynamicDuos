@@ -10,11 +10,11 @@ VAR_OUTPUT
 	bError : BOOL := FALSE; 
 END_VAR
 VAR CONSTANT
-	nMaxBufferSize : UDINT := 6000000;
+	nMaxBufferSize : UDINT := 2000000;
 END_VAR
 VAR
 	cDefaultHeader : T_MaxString := 'TimeLow,TimeHigh,EncoderDegrees,EncoderRadians,CommandVoltage,CommandTorque,AppliedTorque,VSTorque,GripForce,GripThreshold,SequenceState,CurrentTestIndex,TestIsLive $n'; 
-	sDefaultDirectory : T_MaxString := 'C:\Users\njanne\Documents\DDTestLogs\'; 
+	sDefaultDirectory : T_MaxString := 'C:\Users\njanne\Documents\DDTestLogs\calibration\'; 
 	bWriteToDisk : BOOL := FALSE; 
 	eFileWriteState : (IDLE, OPEN, WRITE, CLOSE, ERROR); 
 	nFileWriteSubstep : INT := 0; 

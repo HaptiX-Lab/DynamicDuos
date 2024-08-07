@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MetadataBlock" Id="{541e6ea9-a791-429c-a3ec-1030905d20a6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MetadataBlock
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	bBusy : BOOL := FALSE; 
+	bError : BOOL := FALSE; 
+	sUserID : STRING(400) := ''; 
+END_VAR
+VAR
+	bGenerateRandomID : BOOL := TRUE; 
+	drand : DRAND; 
+	rRandomIDFloat : LREAL; 
+	nRandomID : DINT; 
+	sFilename : STRING(400) := ''; 
+	sDescriptionBox : STRING(1000); 
+	sNotesBox : STRING(1000); 
+	
+	// File writing variables
+	sDefaultDirectory : T_MaxString := 'C:\Users\njanne\Documents\DDTestLogs\metadata\';
+	bWriteToDisk : BOOL := FALSE; 
+	bIDWritten : BOOL := FALSE; 
+	bDescWritten : BOOL := FALSE; 
+	bNotesWritten : BOOL := FALSE; 
+	nFileHandle : UINT; 
+	eFileWriteState : (IDLE, OPEN, WRITE, CLOSE, ERROR); 
+	nFileWriteSubstep : INT := 0; 
+	sTempString : STRING(1000); 
+	sNewline : STRING := '$n'; 
+	
+	// Helper function blocks
+	fbFormatString : FB_FormatString; 
+	fbFormatString2 : FB_FormatString2; 
+	fbFileOpen : FB_FileOpen; 
+	fbFilePuts : FB_FilePuts; 
+	fbFileClose : FB_FileClose; 
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF bGenerateRandomID THEN 
+	drand(Num => rRandomIDFloat); 
+	rRandomIdFloat := rRandomIDFloat * 1000000; 
+	nRandomID := LREAL_TO_DINT(rRandomIDFloat); 
+	fbFormatString(sFormat := '%06d', arg1 := F_DINT(nRandomID)); 
+	sUserID := fbFormatString.sOut; 
+	bGenerateRandomID := FALSE; 
+END_IF
+
+IF bWriteToDisk THEN 
+	
+	// If it's time to write to disk, we need to empty the buffer. 
+	CASE eFileWriteState OF 
+		
+		IDLE: 
+			// Get everything read. 
+			fbFormatString(sFormat := '%s.txt', arg1 := F_STRING(sUserId)); 
+			sFilename := fbFormatString.sOut; 
+			nFileHandle := 0; 
+			bBusy := TRUE; 
+			eFileWriteState := OPEN; 
+			nFileWriteSubstep := 0; 
+	
+		OPEN: 
+			CASE nFileWriteSubstep OF 
+				0: 
+					// Opens a file for writing at the end of the file 
+					fbFileOpen(sPathName := CONCAT(sDefaultDirectory, sFilename), bExecute := FALSE); 
+					fbFileOpen(
+						bExecute		:= TRUE, 
+						sNetID			:= '', 
+						sPathName		:= CONCAT(sDefaultDirectory, sFilename),
+						nMode 			:= FOPEN_MODEAPPEND OR FOPEN_MODETEXT); 
+						
+					nFileWriteSubstep := nFileWriteSubstep + 1; // Advance to wait for open. 
+					
+				1: 
+					fbFileOpen(bExecute := FALSE); 
+					IF NOT fbFileOpen.bBusy THEN 
+						IF fbFileOpen.bError THEN 
+							eFileWriteState := ERROR; 
+							nFileWriteSubstep := 0; 
+						ELSE 
+							nFileHandle := fbFileOpen.hFile; 
+							eFileWriteState := WRITE; 
+							nFileWriteSubstep := 0;
+						END_IF
+					END_IF
+			END_CASE
+			
+		WRITE: 
+			CASE nFileWriteSubstep OF 
+				0 : 
+					fbFilePuts(bExecute := FALSE); 
+					
+					// Check if we need to write the ID 
+					IF NOT bIDWritten THEN 
+						CONCAT2(ADR(sFilename), ADR(sNewline), pDstString := ADR(sTempString), nDstSize := SIZEOF(sTempString)); 
+						bIDWritten := TRUE; 
+					ELSIF NOT bDescWritten THEN 
+						CONCAT2(ADR(sDescriptionBox), ADR(sNewline), pDstString := ADR(sTempString), nDstSize := SIZEOF(sTempString));
+						bDescWritten := TRUE; 
+					ELSIF NOT bNotesWritten THEN
+						CONCAT2(ADR(sNotesBox), ADR(sNewline), pDstString := ADR(sTempString), nDstSize := SIZEOF(sTempString));
+						bNotesWritten := TRUE; 
+					END_IF
+			
+					fbFilePuts(
+						bExecute		:= TRUE, 
+						sNetID			:= '', 
+						hFile			:= nFileHandle, 
+						sLine			:= sTempString); 
+					
+					nFileWriteSubstep := nFileWriteSubstep + 1; 
+					
+				1 : 
+					fbFilePuts(bExecute := FALSE); 
+					IF NOT fbFilePuts.bBusy THEN 
+						IF fbFilePuts.bError THEN 
+							eFileWriteState := ERROR; 
+							nFileWriteSubstep := 0; 
+						ELSE 
+							// Check if we have more things to write 
+							IF bNotesWritten THEN 
+								eFileWriteState := CLOSE;
+							ELSE 
+								eFileWriteState := WRITE;
+							END_IF
+						END_IF
+						nFileWriteSubstep := 0; 
+					END_IF
+
+			END_CASE
+			
+		CLOSE: 
+			CASE nFileWriteSubstep OF 
+				0: 
+					fbFileClose(bExecute := FALSE); 
+					fbFileClose(
+						bExecute		:= TRUE,
+						sNetId			:= '', 
+						hFile			:= nFileHandle); 
+					nFileWriteSubstep := nFileWriteSubstep + 1; 
+				1: 
+					fbFileClose(bExecute := FALSE); 
+					IF NOT fbFileClose.bBusy THEN 
+						IF fbFileClose.bError THEN 
+							eFileWriteState := ERROR; 
+							nFileWriteSubstep := 0; 
+						ELSE
+							eFileWriteState := IDLE; 
+							nFileHandle := 0; 
+							
+							// Also reset everything so taht a new file can be written 
+							nFileWriteSubstep := 0; 
+							bIDWritten := FALSE; 
+							bDescWritten := FALSE; 
+							bNotesWritten := FALSE; 
+							bBusy := FALSE; 
+							bWriteToDisk := FALSE; 
+							
+						END_IF
+					END_IF
+			END_CASE
+			
+		ERROR: 
+			// Error, clear the handle and go back to idle. 
+			nFileHandle := 0;
+			eFileWriteState := IDLE; 
+			bError := TRUE; 
+	
+	END_CASE
+
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="MetadataBlock">
+      <LineId Id="9" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="52" Count="2" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="212" Count="1" />
+      <LineId Id="60" Count="7" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="71" Count="6" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="82" Count="1" />
+      <LineId Id="85" Count="2" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="91" Count="4" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="96" Count="3" />
+      <LineId Id="101" Count="2" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="197" Count="0" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="191" Count="0" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="203" Count="0" />
+      <LineId Id="205" Count="3" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="131" Count="1" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="136" Count="1" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="141" Count="4" />
+      <LineId Id="147" Count="1" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="150" Count="3" />
+      <LineId Id="155" Count="9" />
+      <LineId Id="166" Count="0" />
+      <LineId Id="168" Count="5" />
+      <LineId Id="175" Count="5" />
+      <LineId Id="174" Count="0" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="181" Count="5" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

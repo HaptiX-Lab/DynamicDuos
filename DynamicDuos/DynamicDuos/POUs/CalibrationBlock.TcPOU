@@ -4,7 +4,8 @@
     <Declaration><![CDATA[FUNCTION_BLOCK CalibrationBlock
 VAR_INPUT
 
-	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 	
+	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 
+	fbMetadata : REFERENCE TO MetadataBlock; 	
 
 END_VAR
 VAR_OUTPUT
@@ -15,12 +16,27 @@ VAR_OUTPUT
 	rEncoderLastDegrees : REAL; 	
 	rEncoderRadians : REAL; 
 	rEncoderLastRadians : REAL; 
+	rEncoderRadiansBuffer : ARRAY[1..FILTER_WINDOW] OF REAL; 
+	rEncoderRadiansSum : REAL; 
+	rEncoderRadiansFiltered : REAL; 
+	nFilterBufferCount : INT := 0; 
 	
 	// Variables for motor control 
 	rCommandVoltage : REAL; 
 	rVirtualSpringTorque : REAL; // Torque applied by any vritual spring
 	rAppliedTorque : REAL;  // Torque applied as part of the test
 	rCommandTorque : REAL; // The sum of the two variables above.  
+		rError : REAL; 
+	rLastError : REAL; 
+	rProportional : REAL; 
+	rIntegral : REAL := 0; 
+	rDerivative : REAL; 
+	bPIDStale : BOOL := TRUE;
+	rControlOutput : REAL; 
+	Kp : REAL := 0.3; 
+	Ki : REAL := 0.03; 
+	Kd : REAL := 0.05; 
+	d_time : REAL := 0.0001; // Time step (100 us). 
 	
 	// Variables for load cell 
 	rGripForce : REAL; 
@@ -31,6 +47,7 @@ END_VAR
 VAR CONSTANT
 	rAngleNormalizationFactor : REAL := 90; 
 	nMaxTrialNumber : UINT := 10; 
+	FILTER_WINDOW : INT := 11; 
 END_VAR
 
 VAR
@@ -80,14 +97,17 @@ VAR
 	// At the begginning, we are in the configuration state. 
 	eSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
 	eNextSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
+	eSetupSubState : (HOMING, WAITING); 
 	nCurrentTestIndex : INT := 0; 
 	bTestIsLive : BOOL := FALSE; 
 	bTestIsLiveTrigger : BOOL := FALSE; 
 	
 	// Helper variables 
-	i : UINT; 
+	i : INT;
+	j : INT;  
 	fbTonTest : TON := (PT := T#1000MS); // Timer for the entire test
 	fbTonPulse : TON := (PT := T#200MS); // Timer for the duration of the pulse 
+	fbTonHoming : TON := (PT := T#500MS); // Time to give state machine to home
 	bMotorLimitHit : BOOL := FALSE; 
 	stCalibStepState : ST_CalibTrialStep; 
 	nCurrentLaunchIndex : INT := 0;
@@ -99,6 +119,8 @@ VAR
 	fbFormatString : FB_FormatString; 
 	nLastTimeStep : UDINT; 
 
+	bWheelIsIdle: BOOL;
+	rStartGripThreshold: REAL := 1.5;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -110,6 +132,25 @@ rEncoderDegrees := fbEncoder1.rDegrees;
 rEncoderLastDegrees := fbEncoder1.rLastDegrees; 
 rEncoderRadians := fbEncoder1.rRadians; 
 rEncoderLastRadians := fbEncoder1.rLastRadians; 
+
+// Update digital filter. 
+IF nFilterBufferCount < FILTER_WINDOW THEN 
+	nFilterBufferCount := nFilterBufferCount + 1; 
+END_IF
+
+// Shift the buffer and add the new reading 
+FOR i := FILTER_WINDOW TO 2 BY -1 DO
+	rEncoderRadiansBuffer[i] := rEncoderRadiansBuffer[i-1]; 
+END_FOR
+rEncoderRadiansBuffer[1] := rEncoderRadians;
+
+// Computer the moving average only if the buffer is full
+j := MIN(nFilterBufferCount, FILTER_WINDOW); 
+rEncoderRadiansSum := 0.0; 
+FOR i:= 1 TO j DO
+	rEncoderRadiansSum := rEncoderRadiansSum + rEncoderRadiansBuffer[i];
+END_FOR
+rEncoderRadiansFiltered := rEncoderRadiansSum / j; 
 
 // Load cell 
 fbLoadCell(); 
@@ -125,8 +166,9 @@ fbTonPulse(IN := bTestIsLive);
 // Here we also create the beginning of the logging file. 
 // Generate the file name 
 fbFormatString(
-	sFormat := 'test_%d.csv',
-	arg1 := F_INT(nCurrentLaunchIndex));
+	sFormat := '%s_test_%d.csv', 
+	arg1 := F_STRING(fbMetadata.sUserID), 
+	arg2 := F_INT(nCurrentLaunchIndex));
 	
 fbLogger(sFileName := fbFormatString.sOut); 
 
@@ -173,49 +215,77 @@ CASE eSequenceState OF
 	// We are getting the test ready. 
 	CalibStateType.TEST_SETUP: 
 	
-		// In this state, we need to recenter the motor back to the 0 point, and we also need to wait 
-		// for the triggering signal. This signal is either going to be a timer, a manual button, or a grip threshold. 
-		// We need to additionally resolve this for the test to commence. 
-		
-		// Reset motor limit flag if its been hit 
-		bMotorLimitHit := FALSE; 
-		
-		// We can start by returning the motor to the homing position, which we can do with a simple PID
-		// rCommandTorque := -1 * 0.5 * ((3/2) * (fbEncoder1.rDegrees / rAngleNormalizationFactor) - (1/2) * (fbEncoder1.rLastDegrees / rAngleNormalizationFactor));
-		rVirtualSpringTorque := 0; 
-		rAppliedTorque := -1 * ((3/2) * rEncoderRadians - (1/2) * rEncoderLastRadians);
-		rCommandTorque := rVirtualSpringTorque + rAppliedTorque; 
-		rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
-		fbMotorReference(rCommandVoltage := rCommandVoltage); 
-		
-		// Then we check to see if the test going live conditions are met: 
-		// We need to figure out the type of trigger that's being used, and then we test for that. 
-		// In the first scenario, it's if there is a manual pulse sent from the button
-		IF bTestIsLiveTrigger AND bManualPulseLIVE AND NOT bManualPulseTimerEnableLIVE THEN // Manually push button 
-			bTestIsLive := TRUE; 
-			bTestIsLiveTrigger := FALSE; 
-		END_IF 
-		
-		// Then we need to check if it's a grip trigger pulse. To do this, we first update what the grip trigger
-		// should be, and then we check to see if the current grip matches that value 
-		IF NOT bManualPulseLIVE THEN
-			IF bUseConstantGripTrigger THEN
-				rCurrentGripThreshold := aGripScheduleLIVE[1]; 
-			ELSE
-				rCurrentGripThreshold := aGripScheduleLIVE[nCurrentTestIndex]; 
-			END_IF
+		CASE eSetupSubState OF
+			HOMING: 
 			
-			// Once we've set the value, we can compare to see if we've reached it 
-			// Also gate so that the wheel is homed back to the center. 
-			IF rGripForce > rCurrentGripThreshold AND ABS(fbEncoder1.rDegrees) < 5 THEN
-				bTestIsLive := TRUE; 
-			END_IF
+				bMotorLimitHit := FALSE; 
+				
+				// In this state, we need to recenter the motor back to the 0 point, and 
+				// we also need to wait for the triggering signal. 
+				rError := 0 - rEncoderRadiansFiltered; 
+				rProportional := Kp * rError; 
+				rIntegral := rIntegral + (rError * d_time); 
+				rDerivative := (rError - rLastError) / d_time; 
+				rLastError := rError; 
+				//rCommandTorque := -1 * ((3/2) * rEncoderRadians - (2/3) * rEncoderLastRadians);
+				IF bPIDStale THEN
+					rAppliedTorque := rProportional;
+					rIntegral := 0; 
+					bPIDStale := FALSE; 
+				ELSE 
+					rAppliedTorque := rProportional + (Ki * rIntegral) + (Kd * rDerivative);
+				END_IF
+				rVirtualSpringTorque := 0; 
+				rCommandTorque := rAppliedTorque + rVirtualSpringTorque; 
+				rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
+				fbMotorReference(rCommandVoltage := rCommandVoltage); 
+				
+				// Check to see if the wheel has been idle for long enough. 
+				bWheelIsIdle := rGripForce < rStartGripThreshold AND ABS(rEncoderDegrees) < 5;  
+				fbTonHoming(IN := bWheelIsIdle); 
+				
+				IF fbTonHoming.Q THEN
+					eSetupSubState := WAITING; 
+				END_IF
+				
+			WAITING: 
 			
-		END_IF
+				// Then we check to see if the test going live conditions are met: 
+				// We need to figure out the type of trigger that's being used, and then we test for that. 
+				// In the first scenario, it's if there is a manual pulse sent from the button
+				IF bTestIsLiveTrigger AND bManualPulseLIVE AND NOT bManualPulseTimerEnableLIVE THEN // Manually push button 
+					bTestIsLive := TRUE; 
+					bTestIsLiveTrigger := FALSE; 
+				END_IF 
+				
+				// Then we need to check if it's a grip trigger pulse. To do this, we first update what the grip trigger
+				// should be, and then we check to see if the current grip matches that value 
+				IF NOT bManualPulseLIVE THEN
+					IF bUseConstantGripTrigger THEN
+						rCurrentGripThreshold := aGripScheduleLIVE[1]; 
+					ELSE
+						rCurrentGripThreshold := aGripScheduleLIVE[nCurrentTestIndex]; 
+					END_IF
+					
+					// Once we've set the value, we can compare to see if we've reached it 
+					// Also gate so that the wheel is homed back to the center. 
+					IF rGripForce > rCurrentGripThreshold AND ABS(fbEncoder1.rDegrees) < 5 THEN
+						bTestIsLive := TRUE; 
+					END_IF
+					
+				END_IF
+				
+				IF bTestIsLive THEN
+					eNextSequenceState := CalibStateType.TEST_ACTIVE; 
+					bWheelIsIdle := FALSE; 
+					fbTonHoming(IN := bWheelIsIdle); 
+					eSetupSubState := HOMING; 
+				END_IF
+			
+			
+		END_CASE
 		
-		IF bTestIsLive THEN
-			eNextSequenceState := CalibStateType.TEST_ACTIVE; 
-		END_IF
+		
 		
 		
 	// Then we handle logic for actually completing the test. 
@@ -228,7 +298,7 @@ CASE eSequenceState OF
 			IF NOT bTestTypeHumanLIVE THEN
 				
 				rAppliedTorque := rConstantTorqueSettingLIVE; 
-				rVirtualSpringTorque := -1 * 0.25 * rEncoderRadians;
+				rVirtualSpringTorque := -1 * 0.35 * rEncoderRadians;
 				// rCommandTorque := rConstantTorqueSettingLIVE - 1 * (0.4 / rAngleNormalizationFactor) * fbEncoder1.rDegrees; 
 			ELSE
 				rAppliedTorque := rConstantTorqueSettingLIVE; 
@@ -239,18 +309,17 @@ CASE eSequenceState OF
 			rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
 			
 		ELSE
-			rAppliedTorque := 0; 
-			rVirtualSpringTorque := 0; 
-			rCommandTorque := 0; 
-			rCommandVoltage := 0;
+			IF NOT bTestTypeHumanLIVE THEN 
+				rAppliedTorque := 0; 
+				rVirtualSpringTorque := -1 * 0.35 * rEncoderRadians;
+			ELSE
+				rAppliedTorque := 0; 
+				rVirtualSpringTorque := 0; 
+			END_IF
+
+			rCommandTorque := rAppliedTorque + rVirtualSpringTorque; 
+			rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
 		END_IF
-		
-		// Check to see if motor has hit limit
-//		IF rEncoderDegrees > 120 OR bMotorLimitHit THEN // hardcoded threshold, reset back to normal
-//			bMotorLimitHit := TRUE; 
-//			rCommandTorque := -1 * 0.3 * ((3/2) * (fbEncoder1.rDegrees / rAngleNormalizationFactor) - (1/2) * (fbEncoder1.rLastDegrees / rAngleNormalizationFactor));
-//			rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
-//		END_IF
 		
 		fbMotorReference(rCommandVoltage := rCommandVoltage); 
 	
@@ -306,7 +375,7 @@ stCalibStepState.nCurrentTestIndex := nCurrentTestIndex;
 stCalibStepState.nTestIsLive := BOOL_TO_INT(bTestIsLive); 
 
 // If we're in the setup or active phase, we add it to the log. 
-IF eSequenceState = CalibStateType.TEST_SETUP OR eSequenceState = CalibStateType.TEST_ACTIVE THEN
+IF eSequenceState = CalibStateType.TEST_ACTIVE THEN
 	fbLogger.addStep(stNewStep := stCalibStepState); 
 END_IF
 
@@ -334,6 +403,8 @@ END_VAR
       <LineId Id="750" Count="0" />
       <LineId Id="741" Count="0" />
       <LineId Id="751" Count="0" />
+      <LineId Id="884" Count="17" />
+      <LineId Id="883" Count="0" />
       <LineId Id="36" Count="2" />
       <LineId Id="28" Count="0" />
       <LineId Id="148" Count="0" />
@@ -343,7 +414,9 @@ END_VAR
       <LineId Id="297" Count="0" />
       <LineId Id="495" Count="0" />
       <LineId Id="493" Count="0" />
-      <LineId Id="497" Count="4" />
+      <LineId Id="497" Count="1" />
+      <LineId Id="983" Count="2" />
+      <LineId Id="501" Count="0" />
       <LineId Id="600" Count="1" />
       <LineId Id="155" Count="0" />
       <LineId Id="154" Count="0" />
@@ -368,36 +441,22 @@ END_VAR
       <LineId Id="408" Count="0" />
       <LineId Id="270" Count="0" />
       <LineId Id="201" Count="2" />
+      <LineId Id="903" Count="2" />
+      <LineId Id="907" Count="1" />
+      <LineId Id="910" Count="0" />
+      <LineId Id="912" Count="14" />
+      <LineId Id="938" Count="1" />
+      <LineId Id="927" Count="8" />
+      <LineId Id="911" Count="0" />
+      <LineId Id="940" Count="1" />
+      <LineId Id="943" Count="0" />
+      <LineId Id="945" Count="29" />
+      <LineId Id="944" Count="0" />
+      <LineId Id="942" Count="0" />
+      <LineId Id="909" Count="0" />
+      <LineId Id="906" Count="0" />
       <LineId Id="221" Count="0" />
-      <LineId Id="205" Count="2" />
-      <LineId Id="401" Count="2" />
-      <LineId Id="208" Count="1" />
-      <LineId Id="211" Count="0" />
-      <LineId Id="225" Count="0" />
-      <LineId Id="747" Count="0" />
-      <LineId Id="752" Count="0" />
-      <LineId Id="745" Count="0" />
-      <LineId Id="409" Count="0" />
-      <LineId Id="216" Count="1" />
-      <LineId Id="227" Count="0" />
-      <LineId Id="230" Count="0" />
-      <LineId Id="232" Count="1" />
-      <LineId Id="235" Count="0" />
-      <LineId Id="234" Count="0" />
-      <LineId Id="237" Count="0" />
-      <LineId Id="241" Count="0" />
-      <LineId Id="246" Count="0" />
-      <LineId Id="249" Count="1" />
-      <LineId Id="252" Count="0" />
-      <LineId Id="254" Count="1" />
-      <LineId Id="253" Count="0" />
-      <LineId Id="256" Count="1" />
-      <LineId Id="420" Count="0" />
-      <LineId Id="259" Count="2" />
-      <LineId Id="258" Count="0" />
-      <LineId Id="251" Count="0" />
-      <LineId Id="229" Count="0" />
-      <LineId Id="218" Count="2" />
+      <LineId Id="220" Count="0" />
       <LineId Id="262" Count="0" />
       <LineId Id="264" Count="1" />
       <LineId Id="263" Count="0" />
@@ -415,16 +474,14 @@ END_VAR
       <LineId Id="637" Count="0" />
       <LineId Id="640" Count="0" />
       <LineId Id="282" Count="0" />
-      <LineId Id="761" Count="1" />
+      <LineId Id="975" Count="1" />
+      <LineId Id="978" Count="3" />
+      <LineId Id="977" Count="0" />
+      <LineId Id="762" Count="0" />
       <LineId Id="641" Count="0" />
       <LineId Id="285" Count="0" />
       <LineId Id="283" Count="0" />
-      <LineId Id="395" Count="2" />
-      <LineId Id="400" Count="0" />
-      <LineId Id="398" Count="0" />
-      <LineId Id="411" Count="0" />
-      <LineId Id="399" Count="0" />
-      <LineId Id="287" Count="0" />
+      <LineId Id="395" Count="0" />
       <LineId Id="286" Count="0" />
       <LineId Id="275" Count="0" />
       <LineId Id="289" Count="0" />

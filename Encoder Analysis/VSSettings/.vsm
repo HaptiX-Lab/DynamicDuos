@@ -32,12 +32,6 @@
               <Children />
             </Node>
             <Node>
-              <Title>ENCODER_1_COUNTER_VALUE</Title>
-              <Expanded>False</Expanded>
-              <FileName></FileName>
-              <Children />
-            </Node>
-            <Node>
               <Title>ENCODER_1_DEGREES</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -115,14 +109,7 @@
               <Title>Counter Axis</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
-              <Children>
-                <Node>
-                  <Title>ENCODER_1_COUNTER_VALUE</Title>
-                  <Expanded>False</Expanded>
-                  <FileName></FileName>
-                  <Children />
-                </Node>
-              </Children>
+              <Children />
             </Node>
           </Children>
         </Node>
@@ -238,7 +225,7 @@
         </Node>
         <Node>
           <Title>MainExperimentScope</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>

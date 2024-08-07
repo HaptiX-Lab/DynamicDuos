@@ -20,12 +20,16 @@ VAR
 	// by a top level function if multiple objects are going to control it. 
 	fbMotor1 : FB_AnalogMotorDriver; 
 	fbSystemTime : GETSYSTEMTIME; 
+	Metablock : MetadataBlock; 
 	
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// Update system time
 fbSystemTime(timeLoDW => GVL.MAIN_SYSTEM_TIME); 
+
+// Update any metadata 
+Metablock(); 
 
 // Update master state string to send to GUI 
 MASTER_STATE_STR := TO_STRING(MASTER_STATE);
@@ -44,10 +48,10 @@ END_IF
 
 CASE MASTER_STATE OF
 	MasterStateType.ACTIVE : 
-		fbMainExperimentBlock(fbMotorReference := fbMotor1);
+		fbMainExperimentBlock(fbMotorReference := fbMotor1, fbMetadata := Metablock);
  
 	MasterStateType.CALIBRATION : 
-		fbCalibrationBlock(fbMotorReference := fbMotor1);
+		fbCalibrationBlock(fbMotorReference := fbMotor1, fbMetadata := Metablock);
 	
 END_CASE
 
@@ -59,6 +63,9 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
     <LineIds Name="MAIN">
       <LineId Id="309" Count="0" />
       <LineId Id="312" Count="0" />
+      <LineId Id="336" Count="0" />
+      <LineId Id="335" Count="0" />
+      <LineId Id="337" Count="0" />
       <LineId Id="310" Count="0" />
       <LineId Id="231" Count="0" />
       <LineId Id="196" Count="0" />

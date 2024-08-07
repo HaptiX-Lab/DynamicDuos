@@ -4,7 +4,8 @@
     <Declaration><![CDATA[FUNCTION_BLOCK MainExperimentBlock
 VAR_INPUT
 
-	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 	
+	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 
+	fbMetadata : REFERENCE TO MetadataBlock; 
 
 END_VAR
 VAR_OUTPUT
@@ -15,6 +16,10 @@ VAR_OUTPUT
 	rEncoderLastDegrees : REAL; 
 	rEncoderRadians : REAL; 
 	rEncoderLastRadians : REAL; 
+	rEncoderRadiansBuffer : ARRAY[1..FILTER_WINDOW] OF REAL; 
+	rEncoderRadiansSum : REAL; 
+	rEncoderRadiansFiltered : REAL; 
+	nFilterBufferCount : INT := 0; 
 
 	// Variables for motor control 
 	rCommandVoltage : REAL; 
@@ -24,10 +29,11 @@ VAR_OUTPUT
 	rProportional : REAL; 
 	rIntegral : REAL := 0; 
 	rDerivative : REAL; 
+	bPIDStale : BOOL := TRUE;
 	rControlOutput : REAL; 
-	Kp : REAL := 0.2; 
-	Ki : REAL := 0.05; 
-	Kd : REAL := 0.03; 
+	Kp : REAL := 0.3; 
+	Ki : REAL := 0.03; 
+	Kd : REAL := 0.05; 
 	d_time : REAL := 0.0001; // Time step (100 us). 
 	
 	// Variables for load cell 
@@ -40,6 +46,8 @@ VAR CONSTANT
 	// Load constants (for virtual wall) 
 	aLOAD_CONSTANTS : ARRAY[1..5] OF REAL := [0.1, 0.2, 0.3, 0.4, 0.5]; 
 	
+	// Constants for digital filtering 
+	FILTER_WINDOW : INT := 11; 
 	
 END_VAR
 VAR
@@ -51,12 +59,14 @@ VAR
 	
 	// Settings to manage experiment behavior.  
 	eSequenceState : MainStateType := MainStateType.PRE_LAUNCH; 
-	eNextSequenceState : MainStateType := MainStateType.PRE_LAUNCH; 
+	eNextSequenceState : MainStateType := MainStateType.PRE_LAUNCH;
+	stMainStepState : ST_MainTrialStep;  
 	eSetupSubState : (HOMING, WAITING); 
 	nCurrentTestIndex : INT := 0; 
 	nCurrentLaunchIndex : INT := 0; 
 	bLaunchTestSequence : BOOL := FALSE; 
 	bTestIsLive : BOOL := FALSE; 
+	nTestIsLive : INT; 
 	bDemoMode : BOOL := FALSE; 
 	nDemoLoadSetting : INT := 1; 
 	aTestSettings : ARRAY[1..nMaxTestNumber] OF ST_LoadExperimentSetting; 
@@ -68,16 +78,19 @@ VAR
 		
 	// Intermediate variables for virtual spring
 	rAngleThreshold : REAL := LREAL_TO_REAL(DEG_TO_RAD(80)); 
-	
 	rStartGripThreshold : REAL := 1.5; // Threshold to start the test (amount of force required by hand). 
 
 	// Helpers 
 	i : INT; 
 	j : INT; 
+	TempString : T_MaxString; 
 	bWheelIsIdle : BOOL; 
-	fbTonHoming : TON := (PT := T#300MS); // Time to give state machine to home
+	fbTonHoming : TON := (PT := T#500MS); // Time to give state machine to home
 	drand : DRAND; 
 	rRand : LREAL; // Random variable. 
+	fbSystemTime : GETSYSTEMTIME; 
+	fbFormatString : FB_FormatString; 
+	fbLogger : MainExperimentBlockLogger; 
 	
 END_VAR
 ]]></Declaration>
@@ -96,7 +109,7 @@ IF bInitHLCatch THEN
 		aTestSettings[i].Weight := 3;
 	END_FOR	
 	
-	// Generate random video to start light case
+	// Generate random place to start light case
 	drand(Num => rRand); 
 	
 	// Start index 
@@ -135,6 +148,26 @@ rEncoderLastDegrees := fbEncoder1.rLastDegrees;
 rEncoderRadians := fbEncoder1.rRadians; 
 rEncoderLastRadians := fbEncoder1.rLastRadians;
 
+// Update digital filter. 
+IF nFilterBufferCount < FILTER_WINDOW THEN 
+	nFilterBufferCount := nFilterBufferCount + 1; 
+END_IF
+
+// Shift the buffer and add the new reading 
+FOR i := FILTER_WINDOW TO 2 BY -1 DO
+	rEncoderRadiansBuffer[i] := rEncoderRadiansBuffer[i-1]; 
+END_FOR
+rEncoderRadiansBuffer[1] := rEncoderRadians;
+
+// Computer the moving average only if the buffer is full
+j := MIN(nFilterBufferCount, FILTER_WINDOW); 
+rEncoderRadiansSum := 0.0; 
+FOR i:= 1 TO j DO
+	rEncoderRadiansSum := rEncoderRadiansSum + rEncoderRadiansBuffer[i];
+END_FOR
+rEncoderRadiansFiltered := rEncoderRadiansSum / j; 
+
+
 // Load cell 
 fbLoadCell(); 
 rGripForce := fbLoadCell.rCalibratedOutput; 
@@ -162,7 +195,16 @@ IF bDemoMode THEN
 	
 
 ELSE
+
+	// Generate the file name and update the logger. 
+	fbFormatString(
+		sFormat := '%s_test_%d.csv', 
+		arg1 := F_STRING(fbMetadata.sUserID), 
+		arg2 := F_INT(nCurrentLaunchIndex));
+		
+	fbLogger(sFileName := fbFormatString.sOut); 
 	
+
 	// In the live testing mode, we're running through the state machine. 
 	CASE eSequenceState OF
 		
@@ -198,13 +240,19 @@ ELSE
 				
 					// In this state, we need to recenter the motor back to the 0 point, and 
 					// we also need to wait for the triggering signal. 
-					rError := 0 - rEncoderRadians; 
+					rError := 0 - rEncoderRadiansFiltered; 
 					rProportional := Kp * rError; 
 					rIntegral := rIntegral + (rError * d_time); 
 					rDerivative := (rError - rLastError) / d_time; 
 					rLastError := rError; 
 					//rCommandTorque := -1 * ((3/2) * rEncoderRadians - (2/3) * rEncoderLastRadians);
-					rCommandTorque := rProportional + (Ki * rIntegral) + (Kd * rDerivative);
+					IF bPIDStale THEN
+						rCommandTorque := rProportional;
+						rIntegral := 0; 
+						bPIDStale := FALSE; 
+					ELSE 
+						rCommandTorque := rProportional + (Ki * rIntegral) + (Kd * rDerivative);
+					END_IF
 					rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
 					fbMotorReference(rCommandVoltage := rCommandVoltage); 
 					
@@ -260,15 +308,23 @@ ELSE
 
 		MainStateType.WAITING_FOR_RELEASE: // Wait for the user to drop the wheel
 		
-			IF rGripForce < rStartGripThreshold THEN
+			bWheelIsIdle := rGripForce < rStartGripThreshold; 
+			fbTonHoming(IN := bWheelIsIdle);
+		
+			IF fbTonHoming.Q THEN
 				// There's more tests to run! 
 				IF nCurrentTestIndex < nMaxTestNumber THEN
 					nCurrentTestIndex := nCurrentTestIndex + 1; 
 					eNextSequenceState := MainStateType.TEST_SETUP; 
-					rIntegral := 0; 
+					bPIDStale := TRUE; 
 				ELSE
 					eNextSequenceState := MainStateType.TEST_FINISHED; 
 				END_IF
+				
+				// Reset the timer 
+				bWheelIsIdle := FALSE; 
+				fbTonHoming(IN := bWheelIsIdle); 
+				
 			ELSE
 				eNextSequenceState := MainStateType.WAITING_FOR_RELEASE; 
 			END_IF
@@ -279,19 +335,48 @@ ELSE
 			
 		MainStateType.TEST_FINISHED: 
 			// trigger log writing. 
+			fbLogger.writeLog(); 
 			eNextSequenceState := MainStateType.PROCESSING_LOG; 
 			
 			
 		MainStateType.PROCESSING_LOG: 
-			// Check for errors, then go back to pre-launch 
-			nCurrentTestIndex := 0; 
-			nCurrentLaunchIndex := nCurrentLaunchIndex + 1; 
-			eNextSequenceState := MainStateType.PRE_LAUNCH; 
+		
+			// We need to check if the processing is still busy 
+			IF fbLogger.bError THEN
+				ADSLOGSTR(
+					msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+					msgFmtStr := 'ERROR: Logger has failed during the save process %s', 
+					strArg := ''); 
+			ELSIF NOT fbLogger.bBusy THEN
+				// Check for errors, then go back to pre-launch 
+				nCurrentTestIndex := 0; 
+				nCurrentLaunchIndex := nCurrentLaunchIndex + 1; 
+				eNextSequenceState := MainStateType.PRE_LAUNCH; 
+			END_IF
 			
 	END_CASE
 
 	// Update logs 
 	// Check whether or not to post to the log. 
+	IF nCurrentTestIndex > 0 THEN
+		fbSystemTime(timeLoDW => stMainStepState.nTimestepLow, timeHiDW => stMainStepState.nTimestepHigh);
+		stMainStepState.rEncoderDegrees := rEncoderDegrees; 
+		stMainStepState.rEncoderRadians := rEncoderRadians;
+		stMainStepState.rCommandVoltage := rCommandVoltage; 
+		stMainStepState.rCommandTorque := rCommandTorque; 
+		stMainStepState.rWallTorque := aLOAD_CONSTANTS[aTestSettings[nCurrentTestIndex].Weight];
+		stMainStepState.rGripForce := rGripForce; 
+		stMainStepState.sSequenceStateString := TO_STRING(eSequenceState); 
+		stMainStepState.nCurrentTestIndex := nCurrentTestIndex; 
+		stMainStepState.nTestIsLive := BOOL_TO_INT(bTestIsLive); 
+	END_IF
+	
+	IF eSequenceState = MainStateType.TEST_ACTIVE THEN
+		// Push the step to the log. 
+		fbLogger.addStep(stNewStep := stMainStepState); 
+	END_IF
+	
+	// Update state for next iteration. 
 	eSequenceState := eNextSequenceState; 
 	
 
@@ -347,6 +432,19 @@ END_VAR
       <LineId Id="221" Count="1" />
       <LineId Id="30" Count="2" />
       <LineId Id="218" Count="2" />
+      <LineId Id="846" Count="0" />
+      <LineId Id="845" Count="0" />
+      <LineId Id="847" Count="0" />
+      <LineId Id="849" Count="1" />
+      <LineId Id="857" Count="0" />
+      <LineId Id="853" Count="0" />
+      <LineId Id="852" Count="0" />
+      <LineId Id="854" Count="2" />
+      <LineId Id="859" Count="0" />
+      <LineId Id="858" Count="0" />
+      <LineId Id="860" Count="1" />
+      <LineId Id="863" Count="3" />
+      <LineId Id="851" Count="0" />
       <LineId Id="100" Count="0" />
       <LineId Id="99" Count="0" />
       <LineId Id="105" Count="0" />
@@ -369,7 +467,14 @@ END_VAR
       <LineId Id="251" Count="0" />
       <LineId Id="236" Count="0" />
       <LineId Id="235" Count="0" />
+      <LineId Id="729" Count="0" />
+      <LineId Id="724" Count="0" />
+      <LineId Id="723" Count="0" />
+      <LineId Id="725" Count="0" />
+      <LineId Id="871" Count="0" />
+      <LineId Id="726" Count="2" />
       <LineId Id="263" Count="0" />
+      <LineId Id="722" Count="0" />
       <LineId Id="281" Count="0" />
       <LineId Id="272" Count="0" />
       <LineId Id="282" Count="4" />
@@ -388,7 +493,12 @@ END_VAR
       <LineId Id="514" Count="0" />
       <LineId Id="526" Count="0" />
       <LineId Id="539" Count="0" />
-      <LineId Id="529" Count="9" />
+      <LineId Id="529" Count="8" />
+      <LineId Id="748" Count="0" />
+      <LineId Id="753" Count="1" />
+      <LineId Id="750" Count="1" />
+      <LineId Id="749" Count="0" />
+      <LineId Id="538" Count="0" />
       <LineId Id="528" Count="0" />
       <LineId Id="540" Count="0" />
       <LineId Id="549" Count="0" />
@@ -419,6 +529,8 @@ END_VAR
       <LineId Id="471" Count="0" />
       <LineId Id="470" Count="0" />
       <LineId Id="472" Count="0" />
+      <LineId Id="733" Count="0" />
+      <LineId Id="731" Count="1" />
       <LineId Id="474" Count="0" />
       <LineId Id="381" Count="0" />
       <LineId Id="380" Count="0" />
@@ -426,15 +538,36 @@ END_VAR
       <LineId Id="501" Count="0" />
       <LineId Id="384" Count="1" />
       <LineId Id="379" Count="0" />
+      <LineId Id="734" Count="0" />
+      <LineId Id="736" Count="2" />
+      <LineId Id="735" Count="0" />
       <LineId Id="480" Count="1" />
       <LineId Id="475" Count="4" />
-      <LineId Id="389" Count="9" />
-      <LineId Id="400" Count="0" />
+      <LineId Id="389" Count="2" />
+      <LineId Id="721" Count="0" />
+      <LineId Id="392" Count="3" />
+      <LineId Id="707" Count="0" />
+      <LineId Id="709" Count="2" />
+      <LineId Id="713" Count="3" />
+      <LineId Id="718" Count="2" />
+      <LineId Id="717" Count="0" />
+      <LineId Id="712" Count="0" />
       <LineId Id="322" Count="0" />
       <LineId Id="275" Count="0" />
       <LineId Id="271" Count="0" />
       <LineId Id="328" Count="0" />
-      <LineId Id="403" Count="1" />
+      <LineId Id="403" Count="0" />
+      <LineId Id="740" Count="0" />
+      <LineId Id="689" Count="0" />
+      <LineId Id="693" Count="8" />
+      <LineId Id="741" Count="0" />
+      <LineId Id="690" Count="1" />
+      <LineId Id="702" Count="0" />
+      <LineId Id="706" Count="0" />
+      <LineId Id="703" Count="0" />
+      <LineId Id="692" Count="0" />
+      <LineId Id="704" Count="0" />
+      <LineId Id="404" Count="0" />
       <LineId Id="260" Count="0" />
       <LineId Id="262" Count="0" />
       <LineId Id="261" Count="0" />

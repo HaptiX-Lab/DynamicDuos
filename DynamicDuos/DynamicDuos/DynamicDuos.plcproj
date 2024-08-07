@@ -37,6 +37,9 @@
     <Compile Include="DUTs\ST_LoadExperimentSetting.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\ST_MainTrialStep.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GVLs\GVL.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
@@ -54,6 +57,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MainExperimentBlock.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MainExperimentBlockLogger.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MetadataBlock.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MotorTorqueToCommandV.TcPOU">
