@@ -9,6 +9,7 @@ TYPE MasterStateType :
 	WAITING := 0, 
 	CALIBRATION := 1, 
 	ACTIVE := 2,
+	TRACKING := 3, 
 	ERROR := -1
 )SINT := WAITING;
 END_TYPE

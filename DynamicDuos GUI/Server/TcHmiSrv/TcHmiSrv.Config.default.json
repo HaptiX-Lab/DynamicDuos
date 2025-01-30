@@ -53,7 +53,8 @@
             "enum": [
                 0,
                 1,
-                2
+                2,
+                3
             ],
             "options": [
                 {
@@ -67,6 +68,10 @@
                 {
                     "label": "PARTICIPANT_WINDOW",
                     "value": 2
+                },
+                {
+                    "label": "TRACKING_WINDOW",
+                    "value": 3
                 }
             ],
             "type": "integer"
@@ -292,7 +297,7 @@
             "STARTUPTYPE": 0
         },
         "TcHmiScope": {
-            "ENABLED": true,
+            "ENABLED": false,
             "NAME": "TcHmiScope",
             "PATH": "..\\..\\Packages\\Beckhoff.TwinCAT.HMI.Scope.14.1.120\\runtimes\\win\\net472\\",
             "REQUIRED": false,
@@ -2768,6 +2773,16 @@
             "MAPPING": "PLC1::GVL::LOAD_CELL_NEWTONS",
             "SCHEMA": {
                 "$ref": "tchmi:general#/definitions/REAL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.GVL.MAIN_SYSTEM_TIME": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::GVL::MAIN_SYSTEM_TIME",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/UDINT"
             },
             "USEMAPPING": true
         },
@@ -8255,6 +8270,7 @@
                 "Logout": 3,
                 "PLC1.GVL.ENCODER_1_DEGREES": 3,
                 "PLC1.GVL.LOAD_CELL_NEWTONS": 3,
+                "PLC1.GVL.MAIN_SYSTEM_TIME": 3,
                 "PLC1.GVL.MOTOR_1_APPLIED_VOLTAGE": 3,
                 "PLC1.MAIN.MASTER_STATE": 3,
                 "PLC1.MAIN.MASTER_STATE_STR": 3,

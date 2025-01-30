@@ -301,7 +301,13 @@ CASE eSequenceState OF
 				rVirtualSpringTorque := -1 * 0.35 * rEncoderRadians;
 				// rCommandTorque := rConstantTorqueSettingLIVE - 1 * (0.4 / rAngleNormalizationFactor) * fbEncoder1.rDegrees; 
 			ELSE
-				rAppliedTorque := rConstantTorqueSettingLIVE; 
+			
+				IF NOT bUseConstantPulseTorque THEN
+					rAppliedTorque := 0.4 + 0.02 * rCurrentGripThreshold; 	
+				ELSE
+					rAppliedTorque := rConstantTorqueSettingLIVE; 
+				END_IF
+				
 				rVirtualSpringTorque := 0;  
 			END_IF
 			
@@ -467,7 +473,12 @@ END_VAR
       <LineId Id="753" Count="0" />
       <LineId Id="755" Count="1" />
       <LineId Id="633" Count="1" />
-      <LineId Id="758" Count="1" />
+      <LineId Id="1107" Count="0" />
+      <LineId Id="1109" Count="1" />
+      <LineId Id="1108" Count="0" />
+      <LineId Id="758" Count="0" />
+      <LineId Id="1111" Count="1" />
+      <LineId Id="759" Count="0" />
       <LineId Id="636" Count="0" />
       <LineId Id="383" Count="0" />
       <LineId Id="760" Count="0" />

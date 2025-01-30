@@ -27,7 +27,7 @@
     <HmiViewportUserScaleable>Default</HmiViewportUserScaleable>
     <HmiPostProcessing>True</HmiPostProcessing>
     <Name>DynamicDuos GUI</Name>
-    <HmiCommunicationRouterPort>10105</HmiCommunicationRouterPort>
+    <HmiCommunicationRouterPort>10109</HmiCommunicationRouterPort>
     <HmiCommunicationServerAuthPort>13000</HmiCommunicationServerAuthPort>
     <HmiInitial>1.12.760.59</HmiInitial>
     <HmiRecent>1.12.760.59</HmiRecent>
@@ -114,6 +114,7 @@
   <Target Name="ReBuild" DependsOnTargets="Clean; Build" />
   <ItemGroup>
     <Folder Include="Contents\CalibrationDashboard_Components" />
+    <Folder Include="Contents\TrackingWindow" />
     <Folder Include="Fonts\" />
     <Folder Include="Images" />
     <Folder Include="Images\Manifest" />
@@ -167,6 +168,18 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Contents\ParticipantDashboard.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\TrackingWindow\TrackingWindow.css">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\TrackingWindow\TrackingWindow.js">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Contents\TrackingWindow\TrackingWindow.content">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="FullscreenDesktop.view">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiLua\TcHmiLua.Config.default.json">

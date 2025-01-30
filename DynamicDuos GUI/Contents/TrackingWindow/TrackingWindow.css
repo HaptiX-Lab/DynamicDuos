@@ -1,0 +1,8 @@
+h1 {
+    color: red;
+}
+
+#waterfallCanvas {
+    background-color: darkslategrey;
+    border: 2px solid white;
+}

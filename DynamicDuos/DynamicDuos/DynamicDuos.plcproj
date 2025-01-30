@@ -68,6 +68,9 @@
     <Compile Include="POUs\MotorTorqueToCommandV.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\TrackingBlock.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />

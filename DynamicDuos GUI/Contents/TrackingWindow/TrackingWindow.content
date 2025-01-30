@@ -1,0 +1,12 @@
+<div id="TrackingWindow" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="1887" data-tchmi-height="873">
+    <div id="TcHmiHtmlHost" data-tchmi-type="TcHmi.Controls.System.TcHmiHtmlHost" data-tchmi-height="874" data-tchmi-height-unit="px" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="1888" data-tchmi-width-unit="px">
+        <link rel="stylesheet" type="text/css" href="Contents/TrackingWindow/TrackingWindow.css" />
+        <h1 id="globalTimeCounter">
+            No global time yet
+        </h1>
+        <canvas id="waterfallCanvas" width="1800" height="800" style="border:1px solid #ccc">
+            Your browser does not support HTML5 Canvas
+        </canvas>
+        <tc-script src="Contents/TrackingWindow/TrackingWindow.js" type="text/javascript"></tc-script>
+    </div>
+</div>

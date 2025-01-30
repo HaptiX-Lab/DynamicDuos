@@ -90,8 +90,8 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{83290048-48FD-0E4F-A223-EC74C7848CE1}">
+			<Project GUID="{5FD523EF-254F-47E9-8910-C07B6C15B0E9}" Name="DynamicDuos" PrjFilePath="DynamicDuos\DynamicDuos.plcproj" TmcFilePath="DynamicDuos\DynamicDuos.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="DynamicDuos\DynamicDuos.tmc" TmcHash="{EB899BFD-7D93-E6E9-BEB0-FBB6106433AC}">
 					<Name>DynamicDuos Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -132,6 +132,21 @@
 						</Var>
 						<Var>
 							<Name>MAIN.fbCalibrationBlock.fbLoadCell.nAnalogReading</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbTrackingBlock.fbEncoder1.QE_CHANNEL_COUNTS</Name>
+							<Comment><![CDATA[ This is a single channel of a two-channel quadrature encoder 
+ (if using the EL5122). This QE_CHANNEL object maps all the data
+ we want directly (counts) FROM the device manager 
+ found in the IO tab TO this quadrature encoder block right here. 
+ The quadrature encoder block abstracts any complexity needed 
+ to read/set values in the QE_CHANNEL object so that the device 
+ works as seemlessly as possible. ]]></Comment>
+							<Type>UDINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbTrackingBlock.fbLoadCell.nAnalogReading</Name>
 							<Type>INT</Type>
 						</Var>
 						<Var>
@@ -1316,6 +1331,7 @@ Bit1: Value smaller than Limit2]]></Comment>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 3 (EL3174)">
 				<Link VarA="PlcTask Inputs^MAIN.fbCalibrationBlock.fbLoadCell.nAnalogReading" VarB="AI Standard Channel 1^Value"/>
 				<Link VarA="PlcTask Inputs^MAIN.fbMainExperimentBlock.fbLoadCell.nAnalogReading" VarB="AI Standard Channel 1^Value"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbTrackingBlock.fbLoadCell.nAnalogReading" VarB="AI Standard Channel 1^Value"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Term 1 (EK1100)^Term 4 (EL5122)">
 				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_A_STATUS" VarB="ENC Status Channel 1^Status of input A"/>
@@ -1323,6 +1339,7 @@ Bit1: Value smaller than Limit2]]></Comment>
 				<Link VarA="PlcTask Inputs^GVL.ENCODER_1_RAW_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 				<Link VarA="PlcTask Inputs^MAIN.fbCalibrationBlock.fbEncoder1.QE_CHANNEL_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 				<Link VarA="PlcTask Inputs^MAIN.fbMainExperimentBlock.fbEncoder1.QE_CHANNEL_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbTrackingBlock.fbEncoder1.QE_CHANNEL_COUNTS" VarB="ENC Status Channel 1^Counter value"/>
 			</OwnerB>
 		</OwnerA>
 	</Mappings>

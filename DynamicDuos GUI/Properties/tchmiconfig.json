@@ -2,7 +2,7 @@
   "$schema": "./../../Packages/Beckhoff.TwinCAT.HMI.Framework.12.760.59/runtimes/native1.12-tchmi/Schema/TchmiConfig.Schema.json",
   "basePath": "./framework",
   "scaleMode": "None",
-  "startupView": "Desktop.view",
+  "startupView": "FullscreenDesktop.view",
   "loginPage": "",
   "tcHmiServer": {
     "websocketIntervalTime": 2,
@@ -48,6 +48,16 @@
   "dependencyFiles": [
     {
       "name": "Fonts/Fonts.css",
+      "description": "",
+      "type": "Stylesheet"
+    },
+    {
+      "name": "Contents/TrackingWindow/TrackingWindow.js",
+      "description": "",
+      "type": "JavaScript"
+    },
+    {
+      "name": "Contents/TrackingWindow/TrackingWindow.css",
       "description": "",
       "type": "Stylesheet"
     }
@@ -120,9 +130,22 @@
       "keepAlive": false,
       "loadSync": false,
       "preloadBindings": false
+    },
+    {
+      "url": "Contents/TrackingWindow/TrackingWindow.content",
+      "preload": false,
+      "keepAlive": false,
+      "loadSync": false,
+      "preloadBindings": false
     }
   ],
   "views": [
+    {
+      "url": "FullscreenDesktop.view",
+      "preload": false,
+      "keepAlive": false,
+      "preloadBindings": false
+    },
     {
       "url": "Desktop.view",
       "preload": false,

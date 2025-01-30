@@ -42,7 +42,7 @@ VAR_OUTPUT
 END_VAR
 VAR CONSTANT
 	nMaxTestNumber : INT := 10; 
-	
+
 	// Load constants (for virtual wall) 
 	aLOAD_CONSTANTS : ARRAY[1..5] OF REAL := [0.1, 0.2, 0.3, 0.4, 0.5]; 
 	
@@ -78,6 +78,12 @@ VAR
 		
 	// Intermediate variables for virtual spring
 	rAngleThreshold : REAL := LREAL_TO_REAL(DEG_TO_RAD(80)); 
+	
+	rAngleTarget : REAL := LREAL_TO_REAL(DEG_TO_RAD(60)); 
+	rAngleTargetRange : REAL := LREAL_TO_REAL(DEG_TO_RAD(8)); 
+	bTargetIsInRange : BOOL := FALSE; 
+	
+	
 	rStartGripThreshold : REAL := 1.5; // Threshold to start the test (amount of force required by hand). 
 
 	// Helpers 
@@ -86,6 +92,8 @@ VAR
 	TempString : T_MaxString; 
 	bWheelIsIdle : BOOL; 
 	fbTonHoming : TON := (PT := T#500MS); // Time to give state machine to home
+	fbTonTargetReached : TON := (PT := T#1000MS); // Time where subject should hold wheel in target position.
+	
 	drand : DRAND; 
 	rRand : LREAL; // Random variable. 
 	fbSystemTime : GETSYSTEMTIME; 
@@ -106,7 +114,7 @@ END_IF
 IF bInitHLCatch THEN 
 	FOR i := 1 TO nMaxTestNumber DO 
 		aTestSettings[i].Test_Finished := FALSE; 
-		aTestSettings[i].Weight := 3;
+		aTestSettings[i].Weight := 4;
 	END_FOR	
 	
 	// Generate random place to start light case
@@ -116,14 +124,14 @@ IF bInitHLCatch THEN
 	j := LREAL_TO_INT(rRand * 6 + 3);
 
 	FOR i := j TO nMaxTestNumber DO
-		aTestSettings[i].Weight := 1; 
+		aTestSettings[i].Weight := 2; 
 	END_FOR 
 	bInitHLCatch := FALSE; 
 END_IF
 IF bInitLHCatch THEN
 	FOR i := 1 TO nMaxTestNumber DO 
 		aTestSettings[i].Test_Finished := FALSE; 
-		aTestSettings[i].Weight := 1; 
+		aTestSettings[i].Weight := 2; 
 	END_FOR
 	
 	// Generate random video to start light case
@@ -133,7 +141,7 @@ IF bInitLHCatch THEN
 	j := LREAL_TO_INT(rRand * 6 + 3); 
 	
 	FOR i := j TO nMaxTestNumber DO 
-		aTestSettings[i].Weight := 3; 
+		aTestSettings[i].Weight := 4; 
 	END_FOR
 	bInitLHCatch := FALSE; 
 END_IF
@@ -295,15 +303,23 @@ ELSE
 			// Then send command to the motor. 
 			fbMotorReference(rCommandVoltage := rCommandVoltage);
 			
+			// Check to see if we need to get out of this state (test is finished)
+			bTargetIsInRange := ABS(rEncoderradians - rAngleTarget) <= rAngleTargetRange; 
+			fbTonTargetReached(IN := bTargetIsInRange); 
 			
-			// Check to see if we need to get out of this state (test is finished) 
-			IF rEncoderRadians > rAngleThreshold THEN
+			IF fbTonTargetReached.Q THEN // Trial is complete 
 				aTestSettings[nCurrentTestIndex].Test_Finished := TRUE; 
 				bTestIsLive := FALSE; 
-		
 				eNextSequenceState := MainStateType.WAITING_FOR_RELEASE; 
-				
 			END_IF
+ 
+//			IF rEncoderRadians > rAngleThreshold THEN
+//				aTestSettings[nCurrentTestIndex].Test_Finished := TRUE; 
+//				bTestIsLive := FALSE; 
+		
+//				eNextSequenceState := MainStateType.WAITING_FOR_RELEASE; 
+				
+//			END_IF
 			
 
 		MainStateType.WAITING_FOR_RELEASE: // Wait for the user to drop the wheel
@@ -522,7 +538,15 @@ END_VAR
       <LineId Id="344" Count="11" />
       <LineId Id="343" Count="0" />
       <LineId Id="502" Count="0" />
-      <LineId Id="356" Count="2" />
+      <LineId Id="357" Count="0" />
+      <LineId Id="976" Count="0" />
+      <LineId Id="979" Count="0" />
+      <LineId Id="978" Count="0" />
+      <LineId Id="980" Count="1" />
+      <LineId Id="983" Count="1" />
+      <LineId Id="982" Count="0" />
+      <LineId Id="971" Count="0" />
+      <LineId Id="358" Count="0" />
       <LineId Id="405" Count="0" />
       <LineId Id="387" Count="0" />
       <LineId Id="465" Count="4" />
