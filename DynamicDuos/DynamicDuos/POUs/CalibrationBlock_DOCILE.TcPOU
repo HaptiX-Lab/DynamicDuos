@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="CalibrationBlock_DOCILE" Id="{dd5fd544-1a55-4115-9919-9d74ff3223b4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK CalibrationBlock_DOCILE
+VAR_INPUT
+	rEncoderRadians : REAL ;
+	rEncoderRadiansFiltered : REAL; 
+	rEncoderLastRadians : REAL;
+	rGripForce : REAL; 
+	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 
+END_VAR
+VAR_OUTPUT
+	rCommandVoltage : REAL;
+	rVirtualSpringTorque : REAL;
+	rAppliedTorque : REAL; 
+	rCommandTorque : REAL; 
+	rError : REAL;
+	rLastError : REAL := 0;
+	rProportional : REAL;
+	rIntegral : REAL := 0;
+	rDerivative : REAL; 
+	bPIDStale : BOOL := TRUE; 
+	rControlOutput : REAL;
+	Kp : REAL := 0.3;
+	Ki : REAL := 0.03;
+	Kd : REAL := 0.05; 
+	d_time : REAL := 0.0001; 
+END_VAR
+VAR
+	z : INT := 0; 
+	
+	// State machine members for executing the test
+	eSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
+	eNextSequenceState : CalibStateType := CalibStateType.PRE_LAUNCH; 
+	eSetupSubState : (HOMING, WAITING); 
+	stCalibStepState : ST_CalibTrialStep; 
+	stCalibrationSettings : ST_CalibrationSettings;
+	
+	// Virtual timers for accessing the test
+	fbTonTest : TON := (PT := T#1000MS); // Timer for the entire test
+	fbTonPulse : TON := (PT := T#200MS); // Timer for the duration of the pulse
+	fbTonHoming : TON := (PT := T#500MS); // Time to give state machine to home
+	bMotorLimitHit : BOOL := FALSE; 
+	bWheelIsIdle : BOOL; 
+	bTestIsLive : BOOL := FALSE; 
+	bTestIsLiveTrigger : BOOL := FALSE; 
+	rStartGripThreshold : REAL := 1.5;
+	nCurrentTestIndex : INT := 0; 
+	bLaunchTestSequence: BOOL;
+	rCurrentGripThreshold : REAL := 100; // High number for init just so it can't go off by itself
+	nCurrentLaunchIndex: INT := 0; 
+	bLogHasBeenAcknowledged : BOOL := FALSE; 
+	
+	// Helper functions
+	fbSystemTime : GETSYSTEMTIME; 
+	nLastTimeStep : UDINT; 
+	fbLogger : CalibrationBlockLogger; 
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Update the timers
+fbTonTest(IN := bTestIsLive); 
+fbTonPulse(IN := bTestIsLive);
+
+CASE eSequenceState OF 
+	
+	// The user is currently setting prelaunch settings. 
+	CalibStateType.PRE_LAUNCH: 
+	
+		// Make sure all variables are zerod 
+		bTestIsLive := FALSE;
+		rCommandVoltage := 0; 
+		rVirtualSpringTorque := 0; 
+		rAppliedTorque := 0; 
+		rCommandTorque := 0; 
+		fbMotorReference(rCommandVoltage := rCommandVoltage); 
+	
+		IF bLaunchTestSequence THEN // This would be set by the "LaunchTestSequence" method.
+			eNextSequenceState := CalibStateType.TEST_SETUP; 
+			
+			// Also set the first test index
+			nCurrentTestIndex := 1;  
+			bLaunchTestSequence := FALSE; 
+		ELSE
+			eNextSequenceState := CalibStateType.PRE_LAUNCH; 
+		END_IF
+		
+	// We are getting the test readt 
+	CalibStateType.TEST_SETUP: 
+	
+		CASE eSetupSubState OF 
+			HOMING: 
+			
+				bMotorLimitHit := FALSE; 
+				
+				// In this state, we need to recenter the motor back to the 0 point 
+				// afterwards, we need to wait for the trigger signal 
+				rError := 0 - rEncoderRadiansFiltered; 
+				rProportional := Kp * rError; 
+				rIntegral := rIntegral + (rError * d_time); 
+				rDerivative := (rError - rLastError) / d_time; 
+				rLastError := rError; 
+				
+				// On the first step, if the PID is stale, just use proportional 
+				IF bPIDStale THEN 
+					rAppliedTorque := rProportional; 
+					rIntegral := 0; 
+					bPIDStale := FALSE; 
+				ELSE
+					rAppliedTorque := rProportional + (Ki * rIntegral) + (Kd * rDerivative); 
+				END_IF
+				rVirtualSpringTorque := 0; 
+				rCommandTorque := rAppliedTorque + rVirtualSpringTorque; 
+				rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
+				fbMotorReference(rCommandVoltage := rCommandVoltage); 
+				
+				// Check to see if the wheel has been idle for ong enough 
+				bWheelIsIdle := rGripForce < rStartGripThreshold AND ABS(rEncoderRadians) < 0.08;
+				fbTonHoming(IN := bWheelIsIdle); 
+				
+				IF fbTonHoming.Q THEN 
+					eSetupSubState := WAITING; 
+				END_IF
+				
+			WAITING: 
+				
+				// Then we need to check if the test launch conditions are met 
+				// We need to figure out the type of trigger being used
+				IF bTestIsLiveTrigger AND NOT stCalibrationSettings.bTogglePulseWithGrip THEN
+					bTestIsLive := TRUE; 
+					bTestIsLiveTrigger := FALSE; 
+				END_IF
+				
+				// If it's not the above, then we are toggling pulse with grip 
+				IF  stCalibrationSettings.bTogglePulseWithGrip THEN 
+					IF stCalibrationSettings.bUseConstantGripTrigger THEN 
+						rCurrentGripThreshold := stCalibrationSettings.aGripSchedule[1]; 
+					ELSE
+						rCurrentGripThreshold := stCalibrationSettings.aGripSchedule[nCurrentTestIndex];
+					END_IF 
+					
+					// Once we've set the value, we can compare to see if we've reached it
+					IF rGripForce > rCurrentGripThreshold THEN 
+						bTestIsLive := TRUE; 
+					END_IF
+					
+				END_IF
+				
+				IF bTestIsLive THEN 
+					eNextSequenceState := CalibStateType.TEST_ACTIVE; 
+					bWheelIsIdle := FALSE; 
+					fbTonHoming(IN := bWheelIsIdle); 
+					eSetupSubState := HOMING; 
+					bPIDStale := TRUE; 
+				ELSE
+					eNextSequenceState := CalibStateType.TEST_SETUP;
+					// We need to let go of the motor
+					rVirtualSpringTorque := 0; 
+					rAppliedTorque := 0; 
+					rCommandTorque := 0; 
+					rCommandVoltage := 0;
+					fbMotorReference(rCommandVoltage := rCommandVoltage); 
+				END_IF
+				
+				
+		END_CASE
+		
+		
+	/// Then we handle the logic for actually completing the test 
+	CalibStateType.TEST_ACTIVE: 
+	
+			// Timer is set based on the bTestIsLive variable. 
+			IF NOT fbTonPulse.Q THEN 
+			
+				// We want to split motor action between motor test and human test mode. 
+				// In motor test mode, we add a virtual spring so the motor doesn't slam into the bale
+				IF NOT stCalibrationSettings.bTestTypeHuman THEN
+					
+					rAppliedTorque := stCalibrationSettings.rConstantPulseTorqueVal; 
+					rVirtualSpringTorque := -1 * 0.35 * rEncoderRadians; 
+				ELSE
+					
+					IF NOT stCalibrationSettings.bUseConstantPulseTorque THEN 
+						rAppliedTorque := 0.4 + 0.02 * rCurrentGripThreshold; 
+					ELSE
+						rAppliedTorque := stCalibrationSettings.rConstantPulseTorqueVal; 
+					END_IF 
+					rVirtualSpringTorque := 0; 
+			
+				END_IF
+				
+				rCommandTorque := rAppliedTorque + rVirtualSpringTorque; 
+				rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
+			ELSE
+				
+				IF NOT stCalibrationSettings.bTestTypeHuman THEN 
+					rAppliedTorque := 0; 
+					rVirtualSpringTorque := -1 * 0.35 * rEncoderRadians; 
+				ELSE
+					rAppliedTorque := 0; 
+					rVirtualSpringTorque := 0; 
+				END_IF
+				
+				rCommandTorque := rAppliedTorque + rVirtualSpringTorque; 
+				rCommandVoltage := MotorTorqueToCommandV(rCommandTorque := rCommandTorque); 
+			END_IF
+			
+			fbMotorReference(rCommandVoltage := rCommandVoltage); 
+			
+			// Now we check the test timer
+			IF fbTonTest.Q THEN
+				bTestIsLive := FALSE;
+				IF nCurrentTestIndex < UINT_TO_INT(stCalibrationSettings.nNumTrials) THEN 
+					nCurrentTestIndex := nCurrentTestIndex + 1; 
+					eNextSequenceState := CalibStateType.TEST_SETUP; 
+				ELSE
+					eNextSequenceState := CalibStateType.TEST_FINISHED;
+				END_IF
+			END_IF
+	
+	CalibStateType.TEST_FINISHED: 
+		// Do some logging 
+		IF NOT bLogHasBeenAcknowledged THEN 
+			eNextSequenceState := CalibStateType.TEST_FINISHED; 
+		END_IF
+		eNextSequenceState := CalibStateType.PROCESSING_LOG;
+		
+	CalibStateType.PROCESSING_LOG: 
+		// Wait to see if logging finished
+		nCurrentTestIndex := 0; 
+		nCurrentLaunchIndex := nCurrentLaunchIndex + 1; 
+		eNextSequenceState := CalibStateType.PRE_LAUNCH; 
+END_CASE
+
+
+// At the end of the main loop is when we actually do the logging 
+nLastTimeStep := stCalibStepState.nTimestepLow; 
+fbSystemTime(timeLoDW => stCalibStepState.nTimestepLow, timeHiDW => stCalibStepState.nTimeStepHigh); 
+stCalibStepState.rEncoderDegrees := RAD_TO_DEG(rEncoderRadians); 
+stCalibStepState.rEncoderRadians := rEncoderRadians; 
+stCalibStepState.rCommandVoltage := rCommandVoltage; 
+stCalibStepState.rCommandTorque := rCommandTorque; 
+stCalibStepState.rAppliedTorque := rAppliedTorque; 
+stCalibStepState.rVirtualSpringTorque := rVirtualSpringTorque; 
+stCalibStepState.rGripForce := rGripForce; 
+stCalibStepState.rCurrentGripThreshold := rCurrentGripThreshold; 
+stCalibStepState.sSequenceStateString := TO_STRING(eSequenceState); 
+stCalibStepState.nCurrentTestIndex := nCurrentTestIndex; 
+stCalibStepState.nTestIsLive := BOOL_TO_INT(bTestIsLive); 
+
+IF eSequenceState = CalibStateType.TEST_ACTIVE THEN
+	fbLogger.addStep(stNewStep := stCalibStepState);
+END_IF
+
+// Update sequence state for next iteration 
+eSequenceState := eNextSequenceState; ]]></ST>
+    </Implementation>
+    <LineIds Name="CalibrationBlock_DOCILE">
+      <LineId Id="9" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="96" Count="6" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="71" Count="6" />
+      <LineId Id="104" Count="5" />
+      <LineId Id="111" Count="11" />
+      <LineId Id="124" Count="1" />
+      <LineId Id="127" Count="1" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="129" Count="15" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="148" Count="2" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="156" Count="3" />
+      <LineId Id="161" Count="1" />
+      <LineId Id="164" Count="3" />
+      <LineId Id="169" Count="2" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="172" Count="2" />
+      <LineId Id="176" Count="3" />
+      <LineId Id="175" Count="0" />
+      <LineId Id="285" Count="6" />
+      <LineId Id="284" Count="0" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="145" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="180" Count="7" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="192" Count="12" />
+      <LineId Id="189" Count="0" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="205" Count="3" />
+      <LineId Id="210" Count="2" />
+      <LineId Id="214" Count="3" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="218" Count="3" />
+      <LineId Id="282" Count="1" />
+      <LineId Id="222" Count="2" />
+      <LineId Id="233" Count="0" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="229" Count="3" />
+      <LineId Id="228" Count="0" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="237" Count="1" />
+      <LineId Id="293" Count="2" />
+      <LineId Id="239" Count="3" />
+      <LineId Id="244" Count="2" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="249" Count="1" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="257" Count="0" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="260" Count="9" />
+      <LineId Id="252" Count="0" />
+      <LineId Id="271" Count="0" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="272" Count="1" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="277" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

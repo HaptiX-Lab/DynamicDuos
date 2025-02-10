@@ -31,6 +31,12 @@
     <Compile Include="DUTs\MasterStateType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\ST_CalibLogChunk.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\ST_CalibrationSettings.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\ST_CalibTrialStep.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -53,6 +59,9 @@
     <Compile Include="POUs\CalibrationBlockLogger.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\CalibrationBlock_DOCILE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -62,13 +71,19 @@
     <Compile Include="POUs\MainExperimentBlockLogger.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\MAIN_DOCILE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\TEST.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\WaitingMonitorBlock.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\MetadataBlock.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MotorTorqueToCommandV.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\TrackingBlock.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

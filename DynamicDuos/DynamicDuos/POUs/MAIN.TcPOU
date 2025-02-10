@@ -15,7 +15,7 @@ VAR
 	// Load submodules 
 	fbMainExperimentBlock : MainExperimentBlock; 
 	fbCalibrationBlock : CalibrationBlock;
-	fbTrackingBlock : TrackingBlock; 
+	fbWaitingMonitorBlock : WaitingMonitorBlock;
 	
 	// Motor commands (and other outputs), need to be commanded 
 	// by a top level function if multiple objects are going to control it. 
@@ -32,11 +32,6 @@ fbSystemTime(timeLoDW => GVL.MAIN_SYSTEM_TIME);
 // Update any metadata 
 Metablock(); 
 
-// HOTFIX (REMOVE)
-IF WINDOW_STATE = ActiveWindowStateType.TRACKING_WINDOW THEN 
-	MASTER_STATE := MasterStateType.TRACKING;
-END_IF
-
 // Update master state string to send to GUI 
 MASTER_STATE_STR := TO_STRING(MASTER_STATE);
 
@@ -50,11 +45,10 @@ IF PREVIOUS_MASTER_STATE = MasterStateType.CALIBRATION AND MASTER_STATE <> Maste
 	fbCalibrationBlock.Reset();
 	fbMotor1.Reset(); 
 END_IF
-IF PREVIOUS_MASTER_STATE = MasterStateType.TRACKING AND MASTER_STATE <> MasterStateType.TRACKING THEN 
-	fbTrackingBlock.Reset();
+IF PREVIOUS_MASTER_STATE = MasterStateType.WAITING AND MASTER_STATE <> MasterStateType.WAITING THEN
+	fbWaitingMonitorBlock.Reset();
 	fbMotor1.Reset();
 END_IF
-
 
 CASE MASTER_STATE OF
 	MasterStateType.ACTIVE : 
@@ -62,10 +56,9 @@ CASE MASTER_STATE OF
  
 	MasterStateType.CALIBRATION : 
 		fbCalibrationBlock(fbMotorReference := fbMotor1, fbMetadata := Metablock);
-		
-	MasterStateType.TRACKING : 
-		fbTrackingBlock(fbMotorReference := fbMotor1, fbMetadata := Metablock); 
 	
+	MasterStateType.WAITING: 
+		fbWaitingMonitorBlock(fbMotorReference := fbMotor1, fbMetadata := Metablock);
 END_CASE
 
 // Update previous master state, recall master state 
@@ -79,9 +72,6 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
       <LineId Id="336" Count="0" />
       <LineId Id="335" Count="0" />
       <LineId Id="337" Count="0" />
-      <LineId Id="369" Count="0" />
-      <LineId Id="368" Count="0" />
-      <LineId Id="373" Count="2" />
       <LineId Id="372" Count="0" />
       <LineId Id="370" Count="0" />
       <LineId Id="196" Count="0" />
@@ -96,10 +86,9 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
       <LineId Id="269" Count="0" />
       <LineId Id="288" Count="0" />
       <LineId Id="270" Count="0" />
-      <LineId Id="361" Count="1" />
-      <LineId Id="364" Count="0" />
-      <LineId Id="363" Count="0" />
-      <LineId Id="272" Count="0" />
+      <LineId Id="395" Count="1" />
+      <LineId Id="399" Count="0" />
+      <LineId Id="397" Count="0" />
       <LineId Id="241" Count="0" />
       <LineId Id="233" Count="0" />
       <LineId Id="235" Count="0" />
@@ -107,8 +96,7 @@ PREVIOUS_MASTER_STATE := MASTER_STATE;
       <LineId Id="280" Count="0" />
       <LineId Id="237" Count="0" />
       <LineId Id="284" Count="0" />
-      <LineId Id="365" Count="2" />
-      <LineId Id="283" Count="0" />
+      <LineId Id="400" Count="2" />
       <LineId Id="236" Count="0" />
       <LineId Id="249" Count="0" />
       <LineId Id="248" Count="0" />

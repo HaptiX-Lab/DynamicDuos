@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="WaitingMonitorBlock" Id="{1c99063d-e756-454e-9625-cb7997b30a7d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK WaitingMonitorBlock
+VAR_INPUT
+
+	fbMotorReference : REFERENCE TO FB_AnalogMotorDriver; 
+	fbMetadata : REFERENCE TO MetadataBlock; 
+
+END_VAR
+VAR_OUTPUT
+
+	// Variables for logging
+	nEncoderCounts : LINT; 
+	rEncoderDegrees : REAL;
+	rEncoderLastDegrees : REAL; 
+	rEncoderRadians : REAL; 
+	rEncoderLastRadians : REAL; 
+	rEncoderRadiansBuffer : ARRAY[1..FILTER_WINDOW] OF REAL; 
+	rEncoderRadiansSum : REAL; 
+	rEncoderRadiansFiltered : REAL; 
+	nFilterBufferCount : INT := 0; 
+
+	// Variables for motor control 
+	rCommandVoltage : REAL; 
+	rCommandTorque : REAL; 
+	rError : REAL; 
+	rLastError : REAL; 
+	rProportional : REAL; 
+	rIntegral : REAL := 0; 
+	rDerivative : REAL; 
+	bPIDStale : BOOL := TRUE;
+	rControlOutput : REAL; 
+	Kp : REAL := 0.3; 
+	Ki : REAL := 0.03; 
+	Kd : REAL := 0.05; 
+	d_time : REAL := 0.0001; // Time step (100 us). 
+	
+	// Variables for load cell 
+	rGripForce : REAL; 
+
+END_VAR
+VAR CONSTANT
+	nMaxTestNumber : INT := 10; 
+
+	// Load constants (for virtual wall) 
+	aLOAD_CONSTANTS : ARRAY[1..5] OF REAL := [0.1, 0.2, 0.3, 0.4, 0.5]; 
+	
+	// Constants for digital filtering 
+	FILTER_WINDOW : INT := 11; 
+	
+END_VAR
+VAR
+	
+	// Variables to keep track of the actual encoder/motor setup 
+	fbEncoder1 : FB_QuadratureEncoder;
+	fbLoadCell : FB_AnalogLoadCellInput; 
+	rNormalizedWheelPosition : REAL; 
+		
+	// Intermediate variables for virtual spring
+	rAngleThreshold : REAL := LREAL_TO_REAL(DEG_TO_RAD(80)); 
+	
+	rAngleTarget : REAL := LREAL_TO_REAL(DEG_TO_RAD(60)); 
+	rAngleTargetRange : REAL := LREAL_TO_REAL(DEG_TO_RAD(8)); 
+	bTargetIsInRange : BOOL := FALSE; 
+	
+	
+	rStartGripThreshold : REAL := 1.5; // Threshold to start the test (amount of force required by hand). 
+
+	// Helpers 
+	i : INT; 
+	j : INT; 
+	TempString : T_MaxString; 
+	bWheelIsIdle : BOOL; 
+	fbTonHoming : TON := (PT := T#500MS); // Time to give state machine to home
+	fbTonTargetReached : TON := (PT := T#1000MS); // Time where subject should hold wheel in target position.
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Encoders 
+fbEncoder1(); 
+nEncoderCounts := fbEncoder1.nNetCounts; 
+rEncoderDegrees := fbEncoder1.rDegrees; 
+rEncoderLastDegrees := fbEncoder1.rLastDegrees; 
+rEncoderRadians := fbEncoder1.rRadians; 
+rEncoderLastRadians := fbEncoder1.rLastRadians;
+
+// Update digital filter. 
+IF nFilterBufferCount < FILTER_WINDOW THEN 
+	nFilterBufferCount := nFilterBufferCount + 1; 
+END_IF
+
+// Shift the buffer and add the new reading 
+FOR i := FILTER_WINDOW TO 2 BY -1 DO
+	rEncoderRadiansBuffer[i] := rEncoderRadiansBuffer[i-1]; 
+END_FOR
+rEncoderRadiansBuffer[1] := rEncoderRadians;
+
+// Computer the moving average only if the buffer is full
+j := MIN(nFilterBufferCount, FILTER_WINDOW); 
+rEncoderRadiansSum := 0.0; 
+FOR i:= 1 TO j DO
+	rEncoderRadiansSum := rEncoderRadiansSum + rEncoderRadiansBuffer[i];
+END_FOR
+rEncoderRadiansFiltered := rEncoderRadiansSum / j; 
+
+
+// Load cell 
+fbLoadCell(); 
+rGripForce := fbLoadCell.rCalibratedOutput; 
+
+
+// Update globals for logging 
+GVL.ENCODER_1_COUNTER_VALUE := nEncoderCounts; 
+GVL.ENCODER_1_DEGREES := rEncoderDegrees;
+GVL.MOTOR_1_APPLIED_VOLTAGE := rCommandVoltage; 
+GVL.LOAD_CELL_NEWTONS := rGripForce; ]]></ST>
+    </Implementation>
+    <Method Name="Reset" Id="{63208fc4-699b-46d7-a0b1-38ce313c9555}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbEncoder1.Reset(); ]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="WaitingMonitorBlock">
+      <LineId Id="222" Count="0" />
+      <LineId Id="30" Count="2" />
+      <LineId Id="218" Count="2" />
+      <LineId Id="846" Count="0" />
+      <LineId Id="845" Count="0" />
+      <LineId Id="847" Count="0" />
+      <LineId Id="849" Count="1" />
+      <LineId Id="857" Count="0" />
+      <LineId Id="853" Count="0" />
+      <LineId Id="852" Count="0" />
+      <LineId Id="854" Count="2" />
+      <LineId Id="859" Count="0" />
+      <LineId Id="858" Count="0" />
+      <LineId Id="860" Count="1" />
+      <LineId Id="863" Count="3" />
+      <LineId Id="851" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="261" Count="0" />
+      <LineId Id="61" Count="3" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="106" Count="0" />
+    </LineIds>
+    <LineIds Name="WaitingMonitorBlock.Reset">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

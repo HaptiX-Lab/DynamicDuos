@@ -224,6 +224,64 @@ MEMCPY(
 nStepsSoFar := nStepsSoFar + 1; ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="getLogChunk" Id="{461b3053-7abd-4474-852a-4542c77654c0}">
+      <Declaration><![CDATA[{attribute 'TcRpcEnable':='1'}
+METHOD getLogChunk : ST_CalibLogChunk
+VAR_INPUT
+	nChunkIndex : DINT; 
+END_VAR
+VAR
+	nRemainingPts : DINT; 
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// We essentially want to copy the indices from 
+// chunk index + max_chunk_size into the array that is sitting in the
+// return type 
+getLogChunk.nChunkIndex := nChunkIndex; 
+
+IF ((nChunkIndex * GVL.MAX_CHUNK_SIZE + GVL.MAX_CHUNK_SIZE) <= nStepsSoFar) THEN
+	getLogChunk.nChunkSizeBytes := GVL.MAX_CHUNK_SIZE*SIZEOF(ST_CalibTrialStep);
+	MEMCPY(ADR(getLogChunk.aChunk), ADR(aTrialDataBuffer[nChunkIndex*GVL.MAX_CHUNK_SIZE]), getLogChunk.nChunkSizeBytes); 
+ELSE
+	nRemainingPts := nStepsSoFar - nChunkIndex * GVL.MAX_CHUNK_SIZE; 
+	getLogChunk.nChunkSizeBytes := nRemainingPts*SIZEOF(ST_CalibTrialStep);
+	MEMCPY(ADR(getLogChunk.aChunk), ADR(aTrialDataBuffer[nChunkIndex*GVL.MAX_CHUNK_SIZE]), getLogChunk.nChunkSizeBytes); 
+	getLogChunk.nLastPointIndex := nRemainingPts; 
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="getLogSize" Id="{7b718c47-fbba-4cff-9041-c2cce67f9901}">
+      <Declaration><![CDATA[{attribute 'TcRpcEnable':='1'}
+METHOD getLogSize : BOOL
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	nCurrentChunkSize : DINT := GVL.MAX_CHUNK_SIZE; 
+	nNumLogPoints : DINT := nStepsSoFar;
+	nNumLogChunks : DINT; 
+	nSizeLastChunk : DINT; 
+	nLogSizeBytes : DINT := nStepsSoFar * SIZEOF(ST_CalibTrialStep); 
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[nNumLogChunks := nStepsSoFar / GVL.MAX_CHUNK_SIZE;
+nSizeLastChunk := nStepsSoFar MOD GVL.MAX_CHUNK_SIZE; 
+
+IF (nSizeLastChunk <> 0) THEN
+	nNumLogChunks := nNumLogChunks + 1; // Since the last chunk is there, just smaller
+ELSE
+	// If somehow we have exactly as many data points that can be divided evenly into chunks
+	nSizeLastChunk := GVL.MAX_CHUNK_SIZE; 
+END_IF
+
+// Also return false if there is no log 
+IF nStepsSoFar = 0 THEN 
+	getLogSize := FALSE;
+ELSE
+	getLogSize := TRUE; 
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="writeLog" Id="{d1d636aa-7c2d-44bb-86b2-56a1cc65fc74}">
       <Declaration><![CDATA[METHOD writeLog : BOOL
 VAR_INPUT
@@ -338,6 +396,29 @@ END_VAR
     <LineIds Name="CalibrationBlockLogger.addStep">
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="6" />
+    </LineIds>
+    <LineIds Name="CalibrationBlockLogger.getLogChunk">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+    <LineIds Name="CalibrationBlockLogger.getLogSize">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="2" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="4" />
     </LineIds>
     <LineIds Name="CalibrationBlockLogger.writeLog">
       <LineId Id="5" Count="0" />

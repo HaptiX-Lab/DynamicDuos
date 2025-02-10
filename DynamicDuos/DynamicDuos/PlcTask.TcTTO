@@ -3,9 +3,9 @@
   <Task Name="PlcTask" Id="{8f81e89c-0c62-484f-b19e-51520824b422}">
     <!--CycleTime in micro seconds.-->
     <CycleTime>100</CycleTime>
-    <Priority>20</Priority>
+    <Priority>4</Priority>
     <PouCall>
-      <Name>MAIN</Name>
+      <Name>MAIN_DOCILE</Name>
     </PouCall>
     <TaskFBGuid>{fb466997-48a2-4cd9-bb80-6a9913a83862}</TaskFBGuid>
     <Fb_init>{729cd4b5-5640-4385-9608-0ab42f9f919f}</Fb_init>

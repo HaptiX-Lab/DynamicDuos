@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CalibLogChunk" Id="{03bba265-95b8-4488-9f3d-f2f2fdd9105c}">
+    <Declaration><![CDATA[TYPE ST_CalibLogChunk :
+STRUCT
+	nChunkSizeBytes : DINT; 
+	nChunkIndex : DINT; 
+	nLastPointIndex : DINT := -1; // This will be positive if the last data point in an entire log lies within this chunk. The index will be the index of the last data point. 
+	aChunk : ARRAY[0..GVL.MAX_CHUNK_SIZE] OF ST_CalibTrialStep;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

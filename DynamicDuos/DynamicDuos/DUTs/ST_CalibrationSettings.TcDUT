@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CalibrationSettings" Id="{24b137a8-b9a0-435f-9cc3-3e09ad1e9e41}">
+    <Declaration><![CDATA[TYPE ST_CalibrationSettings :
+STRUCT
+	bTestTypeHuman : BOOL; 
+	nNumTrials : UINT;
+	bTogglePulseWithGrip : BOOL;  
+	bUseManualPulseTimer : BOOL; 
+	bUseConstantGripTrigger : BOOL; 
+	bUseConstantPulseTorque : BOOL; 
+	rConstantPulseTorqueVal : REAL; 
+	aGripSchedule : ARRAY[1..100] OF REAL; // There is never going to be 100, just some upper bound.
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

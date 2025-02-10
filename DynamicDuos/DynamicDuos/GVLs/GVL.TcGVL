@@ -9,11 +9,16 @@ VAR_GLOBAL
 	MOTOR_1_APPLIED_VOLTAGE : REAL; 
 	ENCODER_1_A_STATUS AT %I* : BOOL; 
 	ENCODER_1_B_STATUS AT %I* : BOOL;
-	ENCODER_1_RAW_COUNTS AT %I* : UDINT;
 	LOAD_CELL_NEWTONS : REAL; 
 	MAIN_SYSTEM_TIME : UDINT; 
 	CALIB_SYSTEM_TIME : UDINT; 
 	
+END_VAR
+
+VAR_GLOBAL CONSTANT
+	// Max amount of data entries we can 
+	// send over the wire at once. 
+	MAX_CHUNK_SIZE : DINT := 100; 
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>
